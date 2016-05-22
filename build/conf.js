@@ -1,0 +1,188 @@
+/**
+ * config for project paths.
+ */
+import path from 'path';
+
+/**
+ * base path of the project workspace. The __dirname is the path of the config.js.
+ */
+const basePath = path.join(__dirname,'../');
+
+/**
+ * Compilation architecture configuration.
+ */
+const arch = {
+  /**
+   * Default architecture that the project is compiled to. Used for local development and testing.
+   * TODO(bryk): Dynamically determine this based on current arch.
+   */
+  default: 'amd64',
+  /**
+   * List of all supported architectures by this project.
+   */
+  list: ['amd64', 'arm', 'arm64', 'ppc64le'],
+};
+
+/**
+ * Package version information.
+ */
+const version = {
+  /**
+   * Current release version of the project.
+   */
+  release: 'v1.1.0-beta1',
+  /**
+   * Version name of the canary release of the project.
+   */
+  canary: 'canary',
+};
+
+/**
+ * Base name for the docker image.
+ */
+const imageNameBase = 'gcr.io/google_containers/kubernetes-dashboard';
+
+/**
+ * Exported configuration object with common constants used in build pipeline.
+ */
+export default {
+  /**
+   * Backend application constants.
+   */
+  backend: {
+    /**
+     * The name of the backend binary.
+     */
+    binaryName: 'dashboard',
+    /**
+     * Name of the main backend package that is used in go build command.
+     */
+    mainPackageName: 'github.com/kubernetes/dashboard',
+    /**
+     * Names of all backend packages prefixed with 'test' command.
+     */
+    testCommandArgs: [
+      'test',
+      'github.com/kubernetes/dashboard/...',
+    ],
+    /**
+     * Port number of the backend server. Only used during development.
+     */
+    devServerPort: 9091,
+    /**
+    * Address for the Kubernetes API server.
+    */
+    apiServerHost: 'http://localhost:8080',
+    /**
+     * Address for the Heapster API server. If blank, the dashboard
+     * will attempt to connect to Heapster via a service proxy.
+     */
+    heapsterServerHost: 'http://localhost:8082',
+  },
+
+  /**
+   * Project compilation architecture info.
+   */
+  arch: arch,
+
+  /**
+   * Deployment constants configuration.
+   */
+  deploy: {
+    /**
+     * Project version info.
+     */
+    version: version,
+
+    /**
+     * Image name for the canary release for current architecture.
+     */
+    canaryImageName: `${imageNameBase}-${arch.default}:${version.canary}`,
+
+    /**
+     * Image name for the versioned release for current architecture.
+     */
+    releaseImageName: `${imageNameBase}-${arch.default}:${version.release}`,
+
+    /**
+     * Image name for the canary release for all supported architecture.
+     */
+    canaryImageNames: arch.list.map((arch) => `${imageNameBase}-${arch}:${version.canary}`),
+
+    /**
+     * Image name for the versioned release for all supported architecture.
+     */
+    releaseImageNames: arch.list.map((arch) => `${imageNameBase}-${arch}:${version.release}`),
+  },
+
+  /**
+   * Frontend application constants.
+   */
+  frontend: {
+    /**
+    * Port number to access the dashboard UI
+    */
+    serverPort: 9090,
+    /**
+     * The name of the root Angular module, i.e., the module that bootstraps the application.
+     */
+    rootModuleName: 'kubernetesDashboard',
+  },
+
+  /**
+   * Configuration for tests.
+   */
+  test: {
+    /**
+     * Whether to use sauce labs for running tests that require a browser.
+     */
+    useSauceLabs: !!process.env.SAUCE_USERNAME && !!process.env.SAUCE_ACCESS_KEY &&
+        !!process.env.TRAVIS && process.env.TRAVIS_PULL_REQUEST === 'false',
+  },
+
+  /**
+   * Absolute paths to known directories, e.g., to source directory.
+   */
+  paths: {
+    app: path.join(basePath, 'src/app'),
+    assets: path.join(basePath, 'src/app/assets'),
+    base: basePath,
+    backendSrc: path.join(basePath, 'src/app/backend'),
+    backendTest: path.join(basePath, 'src/test/backend'),
+    backendTmp: path.join(basePath, '.tmp/backend'),
+    backendTmpSrc: path.join(basePath, '.tmp/backend/src/github.com/kubernetes/dashboard'),
+    bowerComponents: path.join(basePath, 'bower_components'),
+    build: path.join(basePath, 'build'),
+    coverage: path.join(basePath, 'coverage'),
+    coverageReport: path.join(basePath, 'coverage/lcov'),
+    deploySrc: path.join(basePath, 'src/deploy'),
+    dist: path.join(basePath, 'dist', arch.default),
+    distCross: arch.list.map((arch) => path.join(basePath, 'dist', arch)),
+    distPublic: path.join(basePath, 'dist', arch.default, 'public'),
+    distPublicCross: arch.list.map((arch) => path.join(basePath, 'dist', arch, 'public')),
+    distRoot: path.join(basePath, 'dist'),
+    externs: path.join(basePath, 'src/app/externs'),
+    fontsDistPublic: path.join(basePath, 'dist', arch.default, 'public/fonts'),
+    fontsDistPublicCross:
+        arch.list.map((arch) => path.join(basePath, 'dist', arch, 'public/fonts')),
+    frontendSrc: path.join(basePath, 'src/app/frontend'),
+    frontendTest: path.join(basePath, 'src/test/frontend'),
+    goTools: path.join(basePath, '.tools/go'),
+    goWorkspace: path.join(basePath, '.go_workspace'),
+    hyperkube: path.join(basePath, 'build/hyperkube.sh'),
+    iconsDistPublic: path.join(basePath, 'dist', arch.default, 'public/static'),
+    iconsDistPublicCross:
+        arch.list.map((arch) => path.join(basePath, 'dist', arch, 'public/static')),
+    integrationTest: path.join(basePath, 'src/test/integration'),
+    karmaConf: path.join(basePath, 'build/karma.conf.js'),
+    materialIcons: path.join(basePath, 'bower_components/material-design-icons/iconfont'),
+    nodeModules: path.join(basePath, 'node_modules'),
+    partials: path.join(basePath, '.tmp/partials'),
+    prodTmp: path.join(basePath, '.tmp/prod'),
+    protractorConf: path.join(basePath, 'build/protractor.conf.js'),
+    robotoFonts: path.join(basePath, 'bower_components/roboto-fontface/fonts'),
+    serve: path.join(basePath, '.tmp/serve'),
+    src: path.join(basePath, 'src'),
+    tmp: path.join(basePath, '.tmp'),
+  },
+};
