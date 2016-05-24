@@ -1,0 +1,64 @@
+<!--
+Copyright 2015 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<kd-content-card ng-if=$ctrl.workloads.deploymentList.deployments.length>
+  <kd-title>
+    <a ui-sref="deployments">
+      Deployments
+    </a>
+  </kd-title>
+  <kd-content>
+    <kd-deployment-card-list deployments="$ctrl.workloads.deploymentList.deployments">
+    </kd-deployment-card-list>
+  </kd-content>
+</kd-content-card>
+
+<kd-content-card ng-if="$ctrl.workloads.replicaSetList.replicaSets.length">
+  <kd-title>
+    <a ui-sref="replicasets">
+      Replica Sets
+    </a>
+  </kd-title>
+  <kd-content>
+    <kd-replica-set-card-list replica-sets="$ctrl.workloads.replicaSetList.replicaSets">
+    </kd-replica-set-card-list>
+  </kd-content>
+</kd-content-card>
+
+<kd-content-card ng-if="$ctrl.workloads.replicationControllerList.replicationControllers.length">
+  <kd-title>
+    <a ui-sref="replicationcontrollers">
+      Replication Controllers
+    </a>
+  </kd-title>
+  <kd-content>
+    <kd-replication-controller-card-list
+            replication-controllers="$ctrl.workloads.replicationControllerList.replicationControllers">
+    </kd-replication-controller-card-list>
+  </kd-content>
+</kd-content-card>
+
+<kd-content-card ng-if="$ctrl.workloads.podList.pods.length">
+  <kd-title>
+    <a ui-sref="pods">
+      Pods
+    </a>
+  </kd-title>
+  <kd-content>
+    <kd-pod-card-list pod-list="$ctrl.workloads.podList">
+    </kd-pod-card-list>
+  </kd-content>
+</kd-content-card>

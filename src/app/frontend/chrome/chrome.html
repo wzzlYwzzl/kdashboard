@@ -1,0 +1,39 @@
+<!--
+Copyright 2015 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<md-toolbar class="kd-toolbar">
+  <div class="md-toolbar-tools kd-toolbar-tools">
+    <a ui-sref="workloads" ui-sref-opts="{ reload: true }" tabindex="-1">
+      <md-icon md-svg-icon="assets/images/kubernetes-logo.svg" class="kd-toolbar-logo"></md-icon>
+    </a>
+    <h2>
+      <span>kubernetes</span>
+    </h2>
+    <div flex="auto" ui-view="toolbar"></div>
+  </div>
+</md-toolbar>
+
+<kd-actionbar ng-if="ctrl.isActionbarVisible()"></kd-actionbar>
+
+<md-content flex="auto" class="kd-app-content">
+  <div ng-switch="ctrl.showLoadingSpinner" flex="auto" >
+    <div ng-switch-when="true" class="kd-center-fixed">
+      <md-progress-circular md-mode="indeterminate" md-diameter="96">
+      </md-progress-circular>
+    </div>
+    <div ng-switch-when="false" ng-transclude class="kd-app-content"></div>
+  </div>
+</md-content>

@@ -1,0 +1,55 @@
+<!--
+Copyright 2015 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<div layout="column" layout-padding-gt-md layout-align="center center" flex="auto">
+  <md-whiteframe class="kd-deploy-whiteframe md-whiteframe-5dp" flex="auto">
+    <h3 class="md-headline kd-deploy-form-title">Deploy a Containerized App</h3>
+
+    <form name="ctrl.deployForm" ng-submit="ctrl.deployBySelection()" novalidate>
+      <kd-help-section>
+        <md-radio-group ng-model="ctrl.selection">
+          <md-radio-button value="Settings" class="md-primary">
+            Specify app details below
+          </md-radio-button>
+          <md-radio-button value="File" class="md-primary">
+            Upload a YAML or JSON file
+          </md-radio-button>
+        </md-radio-group>
+        <kd-user-help>
+          To learn more,
+          <a href="http://kubernetes.io/docs/user-guide/ui/" target="_blank" tabindex="-1">
+            take the Dashboard Tour <i class="material-icons">open_in_new</i>
+          </a>
+        </kd-user-help>
+      </kd-help-section>
+
+      <div ng-switch="ctrl.selection">
+        <deploy-from-settings ng-switch-when="Settings" class="md-body-1" name="ctrl.name"
+            namespaces="ctrl.namespaces" detail="ctrl.detail" form="ctrl.deployForm" protocols="ctrl.protocols">
+        </deploy-from-settings>
+        <deploy-from-file ng-switch-when="File" class="md-body-1" name="ctrl.name" detail="ctrl.detail"
+            form="ctrl.deployForm">
+        </deploy-from-file>
+      </div>
+
+      <md-button class="md-raised md-primary kd-deploy-submit-button" type="submit"
+                 ng-disabled="ctrl.isDeployDisabled()">
+        Deploy
+      </md-button>
+      <md-button class="md-raised kd-deploy-cancel-button" ng-click="ctrl.cancel()">Cancel</md-button>
+    </form>
+  </md-whiteframe>
+</div>

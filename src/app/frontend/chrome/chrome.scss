@@ -1,0 +1,158 @@
+// Copyright 2015 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+@import '../variables';
+
+.kd-toolbar-logo {
+  height: 42px;
+  margin-right: 1em;
+  width: 42px;
+}
+
+.kd-middle-ellipsised-link {
+  display: block;
+}
+
+.kd-toolbar {
+  box-shadow: $whiteframe-shadow-1dp;
+}
+
+chrome {
+  display: block;
+  overflow: hidden;
+}
+
+body,
+.kd-app-content {
+  background-color: $body;
+}
+
+a {
+  color: $primary;
+  text-decoration: inherit;
+
+  &:visited {
+    color: $primary;
+  }
+}
+
+.kd-success {
+  color: $success-color;
+}
+
+.kd-error {
+  color: $error-color;
+}
+
+.kd-toolbar-tools {
+  margin: auto;
+}
+
+.kd-app-content {
+  background-color: $body;
+  position: relative;
+}
+
+.kd-center-fixed {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.kd-text-icon {
+  font-size: inherit;
+  height: inherit;
+  vertical-align: middle;
+}
+
+.kd-comma-separated-item {
+  &:not(:last-child) {
+    &:after {
+      content: ',';
+    }
+  }
+
+  display: inline-block;
+}
+
+// Disables animation on md-tab switch. Avoids some flickering and is simpler.
+[role='tabpanel'] {
+  transition: none;
+}
+
+// Responsive table style.
+@media only screen and (max-width: $layout-breakpoint-xs) {
+  .kd-responsive-table {
+    table-layout: fixed;
+    width: 100%;
+
+    // Switches table to blocks.
+    thead,
+    tbody,
+    tr,
+    th {
+      display: block;
+    }
+
+    // Removes table headers.
+    thead {
+      tr,
+      th {
+        display: none;
+      }
+    }
+
+    // Adds border between records.
+    tr {
+      &:not(:last-child) {
+        border-bottom: $baseline-grid / 2 solid $border;
+      }
+    }
+
+    // Row data style.
+    td {
+      align-items: center;
+      display: flex;
+      height: auto;
+      min-height: $table-cell-height - 2 * $baseline-grid;
+      padding: $baseline-grid $baseline-grid $baseline-grid 12 * $baseline-grid;
+      position: relative;
+
+      // Adds border between rows.
+      &:not(:last-child) {
+        border-bottom: 1px solid $border;
+      }
+
+      // Row title style.
+      &::before {
+        align-items: center;
+        bottom: 0;
+        content: attr(kd-responsive-header);
+        display: flex;
+        font-weight: $bold-font-weight;
+        left: $baseline-grid * 2;
+        padding-right: $baseline-grid * 2;
+        position: absolute;
+        top: 0;
+        word-wrap: break-word;
+      }
+    }
+  }
+}
