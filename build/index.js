@@ -39,6 +39,7 @@ function createIndexFile(indexPath, dev) {
     // Make the dependencies relative to the deps directory.
     ignorePath: [path.relative(conf.paths.base, indexPath)],
     addRootSlash: false,
+    removeTags: true,
     quiet: true,
   };
 

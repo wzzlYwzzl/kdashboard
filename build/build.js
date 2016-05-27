@@ -43,8 +43,7 @@ gulp.task('build:cross', ['backend:prod:cross', 'build-frontend:cross']);
 /**
  * Builds production version of the frontend application for the default architecture.
  */
-gulp.task(
-    'build-frontend', ['localize', 'locales-for-backend'], function() { return doRevision(); });
+gulp.task('build-frontend', ['localize', 'locales-for-backend'], function() { return doRevision(); });
 
 /**
  * Builds production version of the frontend application for all supported architectures.
