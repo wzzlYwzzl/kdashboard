@@ -1,0 +1,18 @@
+<form name="form" ng-submit="$ctrl.login()">
+  <md-input-container class="md-block">
+    <label>Username</label>
+    <input type="text" name="username" ng-model="username">
+    <div ng-messages="form.username.$error">
+      <div ng-message="required"> This is required</div>
+    </div>
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>Password</label>
+    <input name="password" required="" type="text" ng-model="password" minlength="6" maxlength="20">
+    <div ng-messages="form.password.$error" role="alert">
+      <div ng-message-exp="['required', 'minlength', 'maxlength']">
+        Your password must be between 6 and 20 characters long.
+      </div>
+    </div>
+  </md-input-container>
+</form>
