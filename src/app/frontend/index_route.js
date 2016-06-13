@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {stateUrl as defaultStateUrl} from './user/user_state';
+//import {stateUrl as defaultStateUrl} from './workloads/workloads_state';
 
 /**
  * Global route configuration for the application.
@@ -22,5 +22,6 @@ import {stateUrl as defaultStateUrl} from './user/user_state';
  */
 export default function routeConfig($urlRouterProvider) {
   // When no state is matched by an URL, redirect to default one.
-  $urlRouterProvider.otherwise(defaultStateUrl);
+  //$urlRouterProvider.otherwise(defaultStateUrl);
+  $urlRouterProvider.otherwise("/workloads");
 }

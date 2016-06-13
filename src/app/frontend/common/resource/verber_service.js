@@ -64,8 +64,8 @@ export class VerberService {
       // Show dialog if there was an error, not user canceling dialog.
       this.mdDialog_.show(this.mdDialog_.alert()
                               .ok('Ok')
-                              .title(err.statusText || 'Internal server error')
-                              .textContent(err.data || 'Could not delete the resource'));
+                              .title(err.statusText || '服务器内部错误')
+                              .textContent(err.data || '无法删除资源'));
     }
   }
 }

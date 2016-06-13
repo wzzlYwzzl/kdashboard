@@ -26,6 +26,7 @@
 
 .kd-toolbar {
   box-shadow: $whiteframe-shadow-1dp;
+  background-color: #FFFFFF;
 }
 
 chrome {
@@ -47,6 +48,11 @@ a {
   }
 }
 
+.toolbarlogo {
+  color: #FFF;
+  font-size: 25px;
+}
+
 .kd-success {
   color: $success-color;
 }
@@ -57,6 +63,7 @@ a {
 
 .kd-toolbar-tools {
   margin: auto;
+  background-color: #D83535;
 }
 
 .kd-app-content {

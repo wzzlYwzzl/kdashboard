@@ -21,16 +21,15 @@ limitations under the License.
            kd-validate="labelKeyNameLength,labelKeyPrefixLength,labelKeyNamePattern,labelKeyPrefixPattern"
            ng-model-options="{allowInvalid: true}">
     <ng-messages for="labelForm.key.$error" ng-if="labelForm.key.$touched && labelForm.key.$invalid">
-      <ng-message when="unique">{{labelCtrl.label.key}} is not unique.</ng-message>
+      <ng-message when="unique">{{labelCtrl.label.key}} 不唯一</ng-message>
       <ng-message when="kdValidLabelKeyPrefixPattern">
-        Prefix is not a valid DNS subdomain prefix. Example: my-domain.com
+        前缀是一个无效的DNS子域前缀，例如：kaixiangtech.com
       </ng-message>
       <ng-message when="kdValidLabelKeyNamePattern">
-        Label key name must be alphanumeric separated by '-', '_' or '.',
-        optionally prefixed by a DNS subdomain and '/'
+        标签必须是通过'-'或'_'或'.'或'/'分隔开
       </ng-message>
-      <ng-message when="kdValidLabelKeyPrefixLength">Prefix should not exceed 253 characters</ng-message>
-      <ng-message when="kdValidLabelKeyNameLength">Label Key name should not exceed 63 characters</ng-message>
+      <ng-message when="kdValidLabelKeyPrefixLength">前缀不能超过253个字符</ng-message>
+      <ng-message when="kdValidLabelKeyNameLength">标签名字不应该超过63个字符</ng-message>
     </ng-messages>
   </md-input-container>
   <p flex="5"></p>
@@ -41,9 +40,9 @@ limitations under the License.
            ng-model-options="{ getterSetter: true, allowInvalid: true }">
     <ng-messages for="labelForm.value.$error" ng-if="labelForm.value.$touched && labelForm.value.$invalid">
       <ng-message when="kdValidLabelValuePattern">
-        Label value must be alphanumeric separated by '.' , '-' or '_'
+        标签值必须是通过'-'或'_'或'.'分隔开
       </ng-message>
-      <ng-message when="maxlength">Label Value must not exceed 253 characters</ng-message>
+      <ng-message when="maxlength">标签值不能超过253个字符</ng-message>
     </ng-messages>
   </md-input-container>
   <md-button type="button" ng-show="labelCtrl.isRemovable()"

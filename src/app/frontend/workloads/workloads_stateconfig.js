@@ -30,7 +30,7 @@ export default function stateConfig($stateProvider) {
     },
     data: {
       'kdBreadcrumbs': {
-        'label': 'Workloads',
+        'label': '任务集',
       },
     },
     views: {

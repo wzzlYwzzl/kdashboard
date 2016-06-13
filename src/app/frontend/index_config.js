@@ -18,16 +18,16 @@
  */
 export default function config($mdThemingProvider) {
   // Create a color palette that uses Kubernetes colors.
-  let kubernetesColorPaletteName = 'kubernetesColorPalette';
-  let kubernetesAccentPaletteName = 'kubernetesAccentPallete';
-  let kubernetesColorPalette = $mdThemingProvider.extendPalette('blue', {
-    '500': '326de6',
-  });
+  //let kubernetesColorPaletteName = 'kubernetesColorPalette';
+  //let kubernetesAccentPaletteName = 'kubernetesAccentPallete';
+  //let kubernetesColorPalette = $mdThemingProvider.extendPalette('blue', {
+  //  '500': '326de6',
+  //});
 
   // Use the palette as default one.
-  $mdThemingProvider.definePalette(kubernetesColorPaletteName, kubernetesColorPalette);
-  $mdThemingProvider.definePalette(kubernetesAccentPaletteName, kubernetesColorPalette);
+  //$mdThemingProvider.definePalette(kubernetesColorPaletteName, kubernetesColorPalette);
+  //$mdThemingProvider.definePalette(kubernetesAccentPaletteName, kubernetesColorPalette);
   $mdThemingProvider.theme('default')
-      .primaryPalette(kubernetesColorPaletteName)
-      .accentPalette(kubernetesAccentPaletteName);
+      .primaryPalette('red')
+      .accentPalette('red');
 }

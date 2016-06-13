@@ -80,5 +80,8 @@
   },
   "scripts": {
     "postinstall": "build/postinstall.sh"
+  },
+  "dependencies": {
+    "ng-admin": "^1.0.0-alpha2"
   }
 }

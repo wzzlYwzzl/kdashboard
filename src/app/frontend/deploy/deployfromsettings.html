@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-help-section>
   <md-input-container class="md-block" md-is-error="ctrl.isNameError()">
-    <label>App name</label>
+    <label>任务名称</label>
     <div>
       <input ng-model="ctrl.name" name="name" namespace="ctrl.namespace" required
              ng-pattern="ctrl.namePattern"
@@ -26,98 +26,64 @@ limitations under the License.
         ng-class="{'kd-deploy-form-progress-show': ctrl.form.name.$pending}">
       </md-progress-linear>
       <ng-messages for="ctrl.form.name.$error" role="alert" multiple>
-        <ng-message when="required">Application name is required.</ng-message>
+        <ng-message when="required">任务名称必须填写</ng-message>
         <ng-message when="uniqueName">
-          Replication controller or service with this name already exists within namespace
+         所创建的资源已经存在于命名空间
           <i>{{ctrl.namespace}}</i>.
         </ng-message>
         <ng-message when="pattern">
-          Application name must start with a lowercase letter and contain only lowercase letters,
-          numbers, and '-' between words.
+          应用名字必须是小写字母，数字和下划线(_)组成
         </ng-message>
         <ng-message when="maxlength">
-          Name must be up to {{ctrl.nameMaxLength}} characters long.
+          名字长度必须大于 {{ctrl.nameMaxLength}} 个字符
         </ng-message>
       </ng-messages>
     </div>
   </md-input-container>
-
-  <kd-user-help>
-    An 'app' label with this value will be added to the Replication Controller and Service that get
-    deployed.
-    <a href="http://kubernetes.io/docs/user-guide/labels/" target="_blank" tabindex="-1">
-      Learn more <i class="material-icons">open_in_new</i>
-    </a>
-  </kd-user-help>
 </kd-help-section>
 
 <kd-help-section>
   <md-input-container class="md-block">
-    <label>Container image</label>
+    <label>镜像</label>
     <input ng-model="ctrl.containerImage" name="containerImage" required
            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
            kd-valid-imagereference invalid-image-error-message="ctrl.containerImageErrorMessage">
     <ng-messages for="ctrl.form.containerImage.$error" role="alert" multiple>
-      <ng-message when="required">Container image is required.</ng-message>
+      <ng-message when="required">必须选择镜像</ng-message>
       <ng-message when="validImageReference">
-        Container image is invalid: {{ ctrl.containerImageErrorMessage }}
+        镜像无效: {{ ctrl.containerImageErrorMessage }}
       </ng-message>
     </ng-messages>
   </md-input-container>
-  <kd-user-help>
-    Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or
-    Google Container Registry.
-    <a href="http://kubernetes.io/docs/user-guide/images/" target="_blank" tabindex="-1">
-      Learn more <i class="material-icons">open_in_new</i>
-    </a>
-  </kd-user-help>
 </kd-help-section>
 
 <kd-help-section>
   <md-input-container class="md-block">
-    <label>Number of pods</label>
+    <label>任务数量</label>
     <input ng-model="ctrl.replicas" type="number" required min="1" name="replicas"
            kd-validate="integer" kd-warn-threshold="100" kd-warn-threshold-bind="showWarning">
     <ng-messages for="ctrl.form.replicas.$error" role="alert" multiple>
-      <ng-message when="required">Number of pods is required.</ng-message>
-      <ng-message when="number, kdValidInteger">Number of pods must be a positive integer.</ng-message>
-      <ng-message when="min">Number of pods must be at least 1.</ng-message>
+      <ng-message when="required">任务数量必须填写</ng-message>
+      <ng-message when="number, kdValidInteger">任务数量必须为正整数</ng-message>
+      <ng-message when="min">任务数量必须为正整数</ng-message>
     </ng-messages>
     <span class="kd-warn-threshold" ng-show="showWarning">
-      Setting high number of pods may cause performance issues of the cluster and Dashboard UI.
+      任务数量过大会影响性能
     </span>
   </md-input-container>
-  <kd-user-help>
-    A Replication Controller will be created to maintain the desired number of pods across your
-    cluster.
-    <a href="http://kubernetes.io/docs/user-guide/replication-controller/" target="_blank"
-       tabindex="-1">
-      Learn more <i class="material-icons">open_in_new</i>
-    </a>
-  </kd-user-help>
 </kd-help-section>
 
 <kd-help-section>
   <kd-port-mappings port-mappings="ctrl.portMappings" protocols="ctrl.protocols"
       is-external="ctrl.isExternal">
   </kd-port-mappings>
-  <kd-user-help>
-    Ports are optional. If specified, a Service will be created mapping the Port (incoming) to a
-    target Port seen by the container.
-    <span ng-if="ctrl.name">
-      The internal DNS name for this Service will be: <span class="kd-emphasized">{{ctrl.name}}</span>.
-    </span>
-    <a href="http://kubernetes.io/docs/user-guide/services/" target="_blank" tabindex="-1">
-      Learn more <i class="material-icons">open_in_new</i>
-    </a>
-  </kd-user-help>
 </kd-help-section>
 
 <kd-help-section>
   <div class="md-block">
     <md-checkbox ng-model="ctrl.isExternal" class="md-primary"
                  ng-model-options="{ debounce: { 'default': 500, 'blur': 0 } }">
-      Expose service externally
+      对外可以访问服务
     </md-checkbox>
   </div>
   <kd-user-help>
@@ -128,164 +94,110 @@ limitations under the License.
 <div ng-show="ctrl.isMoreOptionsEnabled()">
   <kd-help-section>
     <md-input-container>
-      <label>Description</label>
+      <label>描述</label>
       <textarea ng-model="ctrl.description"></textarea>
     </md-input-container>
-    <kd-user-help>
-      The description will be added as an annotation to the Replication Controller and displayed in
-      the application's details.
-    </kd-user-help>
   </kd-help-section>
 
   <kd-help-section>
     <div layout="column">
-      <div class="kd-label-title md-body-2">Labels</div>
+      <div class="kd-label-title md-body-3">创建标签</div>
       <div layout="row" class="kd-label-header-row">
-        <div flex="45">Key</div>
+        <div flex="45">关键字</div>
         <div flex="5"></div>
-        <div flex="40">Value</div>
+        <div flex="40">值</div>
       </div>
       <div ng-repeat="label in ctrl.labels">
          <kd-deploy-label layout="row" flex="auto" label="label" labels="ctrl.labels">
          </kd-deploy-label>
       </div>
     </div>
-
-    <kd-user-help>
-      The specified labels will be applied to the created Replication Controller, Service (if any)
-      and Pods. Common labels include release, environment, tier, partition and track.
-      <a href="http://kubernetes.io/docs/user-guide/labels/" target="_blank" tabindex="-1">
-        Learn more <i class="material-icons">open_in_new</i>
-      </a>
-    </kd-user-help>
   </kd-help-section>
 
   <kd-help-section>
     <md-input-container class="md-block">
-      <label>Namespace</label>
+      <label>命名空间</label>
       <md-select ng-model="ctrl.namespace" ng-click="ctrl.resetImagePullSecret()" required>
         <md-option ng-repeat="namespace in ctrl.namespaces" ng-value="namespace">
           {{namespace}}
         </md-option>
         <md-option ng-click="ctrl.handleNamespaceDialog($event)">
-          Create a new namespace...
+          创建一个新的命名空间
         </md-option>
       </md-select>
     </md-input-container>
-    <kd-user-help>
-      Namespaces let you partition resources into logically named groups.
-      <a href="http://kubernetes.io/docs/admin/namespaces/" target="_blank" tabindex="-1">
-        Learn more <i class="material-icons">open_in_new</i>
-      </a>
-    </kd-user-help>
   </kd-help-section>
 
   <kd-help-section>
     <md-input-container class="md-block">
-      <label>Image Pull Secret</label>
+      <label>创建私密数据</label>
       <md-select ng-model="ctrl.imagePullSecret" ng-click="ctrl.getSecrets(ctrl.namespace)">
         <md-option ng-repeat="secret in ctrl.secrets" ng-value="secret">
           {{secret}}
         </md-option>
         <md-option ng-click="ctrl.handleCreateSecretDialog($event)">
-          Create a new secret...
+          创建一个新的私密数据
         </md-option>
       </md-select>
     </md-input-container>
-    <kd-user-help>
-      The specified image could require a pull secret credential if it is private. You may choose an
-      existing secret or create a new one.
-      <a href="http://kubernetes.io/docs/user-guide/secrets/" target="_blank" tabindex="-1">
-        Learn more <i class="material-icons">open_in_new</i>
-      </a>
-    </kd-user-help>
   </kd-help-section>
 
   <kd-help-section>
     <div layout="row">
       <md-input-container flex="auto" >
-        <label>CPU requirement (cores)</label>
+        <label>CPU内核数</label>
         <input ng-model="ctrl.cpuRequirement" type="number" name="cpuRequirement" min="0">
         <ng-messages for="ctrl.form.cpuRequirement.$error" role="alert" multiple>
-          <ng-message when="number">CPU requirement must be given as a valid number.</ng-message>
-          <ng-message when="min">CPU requirement must be given as a positive number.</ng-message>
+          <ng-message when="number">CPU内核数必须是一个有效的数字</ng-message>
+          <ng-message when="min">CPU内核数必须是一个正整数</ng-message>
         </ng-messages>
       </md-input-container>
       <div flex="5"></div>
       <md-input-container flex="auto" >
-        <label>Memory requirement (MiB)</label>
+        <label>任务分配的内存(单位MB)</label>
         <input ng-model="ctrl.memoryRequirement" type="number" name="memoryRequirement" min="0">
         <ng-messages for="ctrl.form.memoryRequirement.$error" role="alert" multiple>
-          <ng-message when="number">Memory requirement must be given as a valid number.</ng-message>
-          <ng-message when="min">Memory requirement must be given as a positive number.</ng-message>
+          <ng-message when="number">内存必须是一个有效的数字</ng-message>
+          <ng-message when="min">内存必须是正数</ng-message>
         </ng-messages>
       </md-input-container>
     </div>
-    <kd-user-help>
-      You can specify minimum CPU and memory requirements for the container.
-      <a href="http://kubernetes.io/docs/admin/limitrange/" target="_blank" tabindex="-1">
-        Learn more <i class="material-icons">open_in_new</i>
-      </a>
-    </kd-user-help>
   </kd-help-section>
 
   <kd-help-section>
     <div>
       <md-input-container class="md-block">
-        <label>Run command</label>
+        <label>执行的命令</label>
         <input ng-model="ctrl.containerCommand">
       </md-input-container>
 
       <md-input-container class="md-block">
-        <label>Run command arguments</label>
+        <label>命令参数</label>
         <input ng-model="ctrl.containerCommandArgs">
       </md-input-container>
     </div>
-    <kd-user-help>
-      By default, your containers run the selected image's default entrypoint command. You can
-      use the command options to override the default.
-      <a href="http://kubernetes.io/docs/user-guide/containers/" target="_blank"
-         tabindex="-1">
-        Learn more <i class="material-icons">open_in_new</i>
-      </a>
-    </kd-user-help>
   </kd-help-section>
 
   <kd-help-section>
     <div class="md-block">
       <md-checkbox ng-model="ctrl.runAsPrivileged" class="md-primary">
-        Run as privileged
+        以特权用户运行
       </md-checkbox>
     </div>
-    <kd-user-help>
-      Processes in privileged containers are equivalent to processes running as root on the host.
-      <a href="http://kubernetes.io/docs/user-guide/pods/#privileged-mode-for-pod-containers"
-         target="_blank" tabindex="-1">
-        Learn more <i class="material-icons">open_in_new</i>
-      </a>
-    </kd-user-help>
   </kd-help-section>
 
   <kd-help-section>
     <kd-environment-variables variables="ctrl.variables">
     </kd-environment-variables>
-    <kd-user-help>
-      Environment variables available for use in the container. Values can reference other variables
-      using $(VAR_NAME) syntax.
-      <a href="http://kubernetes.io/docs/user-guide/configuring-containers/#environment-variables-and-variable-expansion"
-         target="_blank" tabindex="-1">
-        Learn more <i class="material-icons">open_in_new</i>
-      </a>
-    </kd-user-help>
   </kd-help-section>
 </div>
 
 <!-- show/hide advanced options toggle -->
 <md-button class="md-primary kd-deploy-moreoptions-button" type="button"
            ng-click="ctrl.switchMoreOptions()" ng-hide="ctrl.isMoreOptionsEnabled()">
-  <md-icon>arrow_drop_down</md-icon>show advanced options
+  <md-icon>arrow_drop_down</md-icon>高级选项
 </md-button>
 <md-button class="md-primary kd-deploy-moreoptions-button" type="button"
            ng-click="ctrl.switchMoreOptions()" ng-show="ctrl.isMoreOptionsEnabled()">
-  <md-icon>arrow_drop_up</md-icon>hide advanced options
+  <md-icon>arrow_drop_up</md-icon>隐藏高级选项
 </md-button>

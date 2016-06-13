@@ -30,7 +30,8 @@ import serviceDetailModule from './servicedetail/servicedetail_module';
 import serviceListModule from './servicelist/servicelist_module';
 import workloadsModule from './workloads/workloads_module';
 import podDetailModule from './poddetail/poddetail_module';
-import user from './user/user_module';
+import config from './index_config';
+//import interceptor from './index_interceptor_config';
 
 export default angular
     .module(
@@ -43,6 +44,7 @@ export default angular
           'ngResource',
           'ngSanitize',
           'ui.router',
+         // 'ng-admin',
           chromeModule.name,
           deployModule.name,
           errorModule.name,
@@ -55,7 +57,7 @@ export default angular
           serviceDetailModule.name,
           serviceListModule.name,
           podDetailModule.name,
-          user.name,
         ])
-    .config(indexConfig)
-    .config(routeConfig);
+   // .config(indexConfig)
+    .config(routeConfig)
+    .config(config)

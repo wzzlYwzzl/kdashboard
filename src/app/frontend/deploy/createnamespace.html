@@ -16,30 +16,29 @@ limitations under the License.
 
 <md-dialog aria-label="Create a new namespace" layout="column">
   <md-dialog-content layout-padding>
-    <h4 class="md-title" >Create a new namespace</h4>
-    <div>The new namespace will be added to the cluster.</div>
+    <h4 class="md-title" >创建命名空间</h4>
     <!-- TODO(maciaszczykm): Missing detailed cluster info. -->
     <form name="ctrl.namespaceForm" ng-submit="ctrl.createNamespace()"
           novalidate>
       <md-input-container class="md-block">
-        <label>Namespace name</label>
+        <label>命名空间名字</label>
         <input name="namespace" ng-model="ctrl.namespace"
             md-maxlength="{{ctrl.namespaceMaxLength}}"
             ng-pattern="ctrl.namespacePattern"
             required>
         <div ng-messages="ctrl.namespaceForm.namespace.$error">
-            <div ng-message="pattern">Name must be alphanumeric and may contain dashes.</div>
+            <div ng-message="pattern">名字必须为阿拉伯数字（也可以包含破折号）</div>
             <div ng-message="maxlength">
-              Name must be up to {{ctrl.namespaceMaxLength}} characters long.
+              命名空间名字长度要大于等于{{ctrl.namespaceMaxLength}}个字符
             </div>
-            <div ng-message="required">Name is required.</div>
+            <div ng-message="required">必须填写名字</div>
         </div>
       </md-input-container>
       <md-dialog-actions layout="row">
         <md-button ng-disabled="ctrl.isDisabled()" class="md-primary" type="submit">
-          Create
+          创建
         </md-button>
-        <md-button ng-click="ctrl.cancel()">Cancel</md-button>
+        <md-button ng-click="ctrl.cancel()">取消</md-button>
       </md-dialog-actions>
     </form>
   </md-dialog-content>

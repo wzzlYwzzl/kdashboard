@@ -33,7 +33,7 @@ export default function stateConfig($stateProvider) {
     },
     data: {
       [breadcrumbsConfig]: {
-        'label': 'Pods',
+        'label': '任务',
         'parent': workloadsState,
       },
     },
