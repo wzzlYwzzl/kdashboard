@@ -32,7 +32,7 @@ export default function stateConfig($stateProvider) {
     },
     data: {
       [breadcrumbsConfig]: {
-        'label': 'Services',
+        'label': '服务',
       },
     },
     views: {

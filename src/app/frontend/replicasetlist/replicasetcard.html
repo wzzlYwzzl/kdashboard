@@ -19,12 +19,12 @@ limitations under the License.
     <md-icon class="material-icons md-warn"
              ng-if="::$ctrl.hasWarnings()">
       error
-      <md-tooltip>One or more pods have errors</md-tooltip>
+      <md-tooltip>一个或者多个任务出现错误</md-tooltip>
     </md-icon>
     <md-icon class="material-icons"
              ng-if="::$ctrl.isPending()">
       timelapse
-      <md-tooltip>One or more pods are in pending state</md-tooltip>
+      <md-tooltip>一个或者多个任务处于等待状态</md-tooltip>
     </md-icon>
 
     <md-icon class="material-icons" style="color: green";
@@ -53,7 +53,7 @@ limitations under the License.
     <kd-resource-card-column>
       {{::$ctrl.replicaSet.objectMeta.creationTimestamp | relativeTime}}
       <md-tooltip>
-        Created at {{::$ctrl.replicaSet.objectMeta.creationTimestamp | date:'short'}}
+        创建于 {{::$ctrl.replicaSet.objectMeta.creationTimestamp | date:'short'}}
       </md-tooltip>
     </kd-resource-card-column>
     <kd-resource-card-column>

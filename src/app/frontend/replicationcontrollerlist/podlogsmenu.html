@@ -17,16 +17,16 @@ limitations under the License.
 <md-menu md-position-mode="target-right target">
   <md-button ng-click="$ctrl.openMenu($mdOpenMenu, $event)" class="md-icon-button">
     <md-icon md-font-library="material-icons">subject</md-icon>
-    <md-tooltip>Logs</md-tooltip>
+    <md-tooltip>日志</md-tooltip>
   </md-button>
   <md-menu-content class="kd-replicationcontroller-card-logs-menu" width="6">
     <md-menu-item class="kd-menu-logs-md-menu-item">
-      <div>Logs</div>
+      <div>日志</div>
     </md-menu-item>
     <md-menu-item class="kd-menu-logs-md-menu-item" layout>
-      <div class="kd-menu-logs-item-header">Pod</div>
+      <div class="kd-menu-logs-item-header">任务</div>
       <div class="kd-menu-logs-item-header kd-menu-logs-item-since" flex="none">
-        Running since
+        一直在运行
       </div>
     </md-menu-item>
     <md-menu-item ng-repeat="pod in ::$ctrl.replicationControllerPodsList"
@@ -42,7 +42,7 @@ limitations under the License.
             {{::(pod.startTime | date:'d/M/yy HH:mm':'UTC')}} UTC
           </span>
           <span ng-if="::!pod.startTime">
-            Not running
+            没有运行
           </span>
           <i class="material-icons kd-text-icon">open_in_new</i>
         </a>

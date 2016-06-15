@@ -19,11 +19,11 @@ limitations under the License.
   <kd-resource-card-status layout="row">
     <md-icon class="material-icons kd-error" ng-if="::$ctrl.hasWarnings()">
       error
-      <md-tooltip md-direction="right">One or more pods have errors</md-tooltip>
+      <md-tooltip md-direction="right">一个或者多个任务有错误</md-tooltip>
     </md-icon>
     <md-icon class="material-icons" ng-if="::$ctrl.isPending()">
       timelapse
-      <md-tooltip md-direction="right">One or more pods are in pending state</md-tooltip>
+      <md-tooltip md-direction="right">一个或者多个任务处于等待状态</md-tooltip>
     </md-icon>
     <md-icon class="material-icons kd-success" ng-if="::$ctrl.isSuccess()">
       beenhere
@@ -50,7 +50,7 @@ limitations under the License.
     <kd-resource-card-column>
       {{::$ctrl.replicationController.objectMeta.creationTimestamp | relativeTime}}
       <md-tooltip>
-        Created at {{::$ctrl.replicationController.objectMeta.creationTimestamp | date:'short'}}
+        创建于 {{::$ctrl.replicationController.objectMeta.creationTimestamp | date:'short'}}
       </md-tooltip>
     </kd-resource-card-column>
     <kd-resource-card-column>

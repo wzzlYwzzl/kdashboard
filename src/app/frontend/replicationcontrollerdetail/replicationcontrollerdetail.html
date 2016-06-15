@@ -17,12 +17,12 @@ limitations under the License.
 <div layout="column">
   <md-content>
     <md-tabs md-border-bottom md-dynamic-height>
-      <md-tab label="Overview">
+      <md-tab label="概况">
         <kd-replication-controller-info replication-controller="::ctrl.replicationControllerDetail">
         </kd-replication-controller-info>
 
         <kd-content-card ng-if="::ctrl.replicationControllerDetail.serviceList.services.length">
-          <kd-title>Services</kd-title>
+          <kd-title>服务</kd-title>
           <kd-content>
             <kd-service-card-list
                     services="::ctrl.replicationControllerDetail.serviceList.services">
@@ -31,7 +31,7 @@ limitations under the License.
         </kd-content-card>
 
         <kd-content-card>
-          <kd-title>Pods</kd-title>
+          <kd-title>任务</kd-title>
           <kd-content>
             <kd-pod-card-list pod-list="::ctrl.replicationControllerDetail.pods"
                               logs-href-fn="::ctrl.getPodLogsHref(pod)">

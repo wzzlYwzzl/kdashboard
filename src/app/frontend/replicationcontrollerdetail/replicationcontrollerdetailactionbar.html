@@ -17,11 +17,11 @@ limitations under the License.
 <div hide show-gt-sm>
   <md-button class="md-icon-button" ng-click="ctrl.redirectToDeployPage()">
     <md-icon class="kd-actionbar-icon-button">add</md-icon>
-    <md-tooltip md-direction="bottom">Deploy a containerized app</md-tooltip>
+    <md-tooltip md-direction="bottom">创建一个任务</md-tooltip>
   </md-button>
   <md-button class="md-icon-button" ng-click="ctrl.handleUpdateReplicasDialog()">
     <md-icon class="kd-actionbar-icon-button">mode_edit</md-icon>
-    <md-tooltip md-direction="bottom">Edit number of pods</md-tooltip>
+    <md-tooltip md-direction="bottom">编辑任务的数量</md-tooltip>
   </md-button>
   <kd-actionbar-delete-item resource-kind-name="Replication Controller"
                             type-meta="ctrl.details.typeMeta"
@@ -46,11 +46,11 @@ limitations under the License.
       </kd-actionbar-delete-item>
       <md-button class="md-fab md-raised md-mini" ng-click="ctrl.handleUpdateReplicasDialog()">
         <md-icon class="kd-actionbar-icon-button">mode_edit</md-icon>
-        <md-tooltip md-direction="bottom">Edit number of pods</md-tooltip>
+        <md-tooltip md-direction="bottom">编辑任务的数量</md-tooltip>
       </md-button>
       <md-button class="md-fab md-raised md-mini" ng-click="ctrl.redirectToDeployPage()">
         <md-icon class="kd-actionbar-icon-button">add</md-icon>
-        <md-tooltip md-direction="bottom">Deploy a containerized app</md-tooltip>
+        <md-tooltip md-direction="bottom">创建一个任务</md-tooltip>
       </md-button>
     </md-fab-actions>
   </md-fab-speed-dial>

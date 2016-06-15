@@ -15,20 +15,20 @@ limitations under the License.
 -->
 
 <kd-info-card>
-  <kd-info-card-header>Resource details</kd-info-card-header>
-  <kd-info-card-section name="Details">
-    <kd-info-card-entry title="Name">
+  <kd-info-card-header>资源详细信息</kd-info-card-header>
+  <kd-info-card-section name="详细信息">
+    <kd-info-card-entry title="名字">
       <kd-middle-ellipsis
               display-string="{{::$ctrl.replicaSet.objectMeta.name}}">
       </kd-middle-ellipsis>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Namespace">
+    <kd-info-card-entry title="命名空间">
       {{::$ctrl.replicaSet.objectMeta.namespace}}
     </kd-info-card-entry>
-    <kd-info-card-entry title="Labels">
+    <kd-info-card-entry title="标签">
       <kd-labels labels="::$ctrl.replicaSet.objectMeta.labels"></kd-labels>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Images">
+    <kd-info-card-entry title="镜像">
       <div ng-repeat="image in $ctrl.replicaSet.containerImages">
         <kd-middle-ellipsis display-string="{{::image}}"></kd-middle-ellipsis>
       </div>
@@ -38,23 +38,23 @@ limitations under the License.
   <kd-info-card-section name="Status">
     <kd-info-card-entry title="Pods">
       <div ng-if="!$ctrl.areDesiredPodsRunning()">
-        {{::$ctrl.replicaSet.podInfo.current}} created,
-        {{::$ctrl.replicaSet.podInfo.desired}} desired
+        {{::$ctrl.replicaSet.podInfo.current}} 已经被创建,
+        {{::$ctrl.replicaSet.podInfo.desired}} 希望被创建
       </div>
       <div ng-if="$ctrl.areDesiredPodsRunning()">
-        {{::$ctrl.replicaSet.podInfo.running}} running
+        {{::$ctrl.replicaSet.podInfo.running}} 正在运行
       </div>
     </kd-info-card-entry>
     <kd-info-card-entry title="Pods status" ng-if="!$ctrl.areDesiredPodsRunning()">
       <div ng-if="!$ctrl.areDesiredPodsRunning()">
         <div ng-if="::$ctrl.replicaSet.podInfo.pending" class="kd-comma-separated-item">
-          {{::$ctrl.replicaSet.podInfo.pending}} pending<!-- Collapse whitespace
+          {{::$ctrl.replicaSet.podInfo.pending}} 处于等待状态<!-- Collapse whitespace
       --></div>
         <div ng-if="::$ctrl.replicaSet.podInfo.failed" class="kd-comma-separated-item">
-          {{::$ctrl.replicaSet.podInfo.failed}} failed<!-- Collapse whitespace
+          {{::$ctrl.replicaSet.podInfo.failed}} 失败<!-- Collapse whitespace
       --></div>
         <div ng-if="::$ctrl.replicaSet.podInfo.running" class="kd-comma-separated-item">
-          {{::$ctrl.replicaSet.podInfo.running}} running
+          {{::$ctrl.replicaSet.podInfo.running}} 正在运行
         </div>
       </div>
     </kd-info-card-entry>

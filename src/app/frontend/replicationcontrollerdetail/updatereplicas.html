@@ -16,30 +16,29 @@ limitations under the License.
 
 <md-dialog aria-label="Create a new namespace" layout="column">
   <md-dialog-content layout-padding>
-    <h4 class="md-title">Set desired number of pods</h4>
+    <h4 class="md-title">设置期望的任务数量</h4>
     <div>
-      Replication controller {{ctrl.replicationController}} will be updated to reflect the desired
-      count.<br/>
+      复制控制器 {{ctrl.replicationController}} 将会被更新以反映预期的数量<br/>
       <span class="kd-updatereplicas-pod-status">
-        Current status: {{ctrl.currentPods}} created, {{ctrl.desiredPods}} desired
+        当前状态: {{ctrl.currentPods}} 已被创建, {{ctrl.desiredPods}} 希望被创建
       </span>
     </div>
     <form name="ctrl.updateReplicasForm" ng-submit="ctrl.updateReplicas()" novalidate>
       <md-input-container class="md-block">
-        <label>Number of pods</label>
+        <label>任务的数量</label>
         <input name="podCount" type="number" kd-validate="integer" min="1" ng-model="ctrl.replicas"
                required kd-warn-threshold="100" kd-warn-threshold-bind="showWarning">
         <ng-messages for="ctrl.updateReplicasForm.podCount.$error" role="alert">
-          <ng-message when="required">Number of pods is required.</ng-message>
-          <ng-message when="number,kdValidInteger">Must be a positive integer.</ng-message>
+          <ng-message when="required">必须填写</ng-message>
+          <ng-message when="number,kdValidInteger">必须为正整数</ng-message>
         </ng-messages>
         <span class="kd-warn-threshold" ng-show="showWarning">
-          Setting high number of pods may cause performance issues of the cluster and Dashboard UI.
+          设置过高的数量将会影响性能
         </span>
       </md-input-container>
       <md-dialog-actions layout="row">
-        <md-button class="md-primary" ng-click="ctrl.cancel()">Cancel</md-button>
-        <md-button class="md-primary" type="submit">OK</md-button>
+        <md-button class="md-primary" ng-click="ctrl.cancel()">取消</md-button>
+        <md-button class="md-primary" type="submit">确定</md-button>
       </md-dialog-actions>
     </form>
   </md-dialog-content>

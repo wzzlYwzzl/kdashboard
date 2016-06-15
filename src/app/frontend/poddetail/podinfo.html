@@ -15,20 +15,20 @@ limitations under the License.
 -->
 
 <kd-info-card>
-  <kd-info-card-header>Resource details</kd-info-card-header>
-  <kd-info-card-section name="Details">
-    <kd-info-card-entry title="Name">
+  <kd-info-card-header>资源详情</kd-info-card-header>
+  <kd-info-card-section name="任务详情">
+    <kd-info-card-entry title="名字">
       <kd-middle-ellipsis
               display-string="{{::$ctrl.pod.objectMeta.name}}">
       </kd-middle-ellipsis>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Namespace">
+    <kd-info-card-entry title="命名空间">
       {{::$ctrl.pod.objectMeta.namespace}}
     </kd-info-card-entry>
-    <kd-info-card-entry title="Start Time">
+    <kd-info-card-entry title="创建时间">
       {{::$ctrl.pod.objectMeta.creationTimestamp | date:'d/M/yy HH:mm':'UTC'}}
     </kd-info-card-entry>
-    <kd-info-card-entry title="Labels">
+    <kd-info-card-entry title="标签">
       <div ng-if="::$ctrl.pod.objectMeta.labels">
         <kd-labels labels="::$ctrl.pod.objectMeta.labels"></kd-labels>
       </div>
@@ -36,21 +36,21 @@ limitations under the License.
         none
       </div>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Status">
+    <kd-info-card-entry title="状态">
       {{::$ctrl.pod.podPhase}}
     </kd-info-card-entry>
-    <kd-info-card-entry title="Images">
+    <kd-info-card-entry title="镜像">
       <div ng-repeat="image in ::$ctrl.pod.containerImages">
         <kd-middle-ellipsis display-string="{{::image}}"></kd-middle-ellipsis>
       </div>
     </kd-info-card-entry>
   </kd-info-card-section>
 
-  <kd-info-card-section name="Network">
-    <kd-info-card-entry title="Node">
+  <kd-info-card-section name="网络信息">
+    <kd-info-card-entry title="节点">
       {{::$ctrl.pod.nodeName}}
     </kd-info-card-entry>
-    <kd-info-card-entry title="IP">
+    <kd-info-card-entry title="IP地址">
       {{::$ctrl.pod.podIP}}
     </kd-info-card-entry>
   </kd-info-card-section>

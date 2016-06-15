@@ -29,5 +29,5 @@ export default function config($mdThemingProvider) {
   //$mdThemingProvider.definePalette(kubernetesAccentPaletteName, kubernetesColorPalette);
   $mdThemingProvider.theme('default')
       .primaryPalette('red')
-      .accentPalette('red');
+      .accentPalette('orange');
 }

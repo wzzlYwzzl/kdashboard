@@ -1,30 +1,33 @@
-// import AuthenticationService from './user_authentication_service';
+// Copyright 2015 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @final
  */
 export class UserController {
   /**
-   * [constructor description]
+   * @param {!backendApi.Workloads} workloads
    * @ngInject
    */
-  constructor($scope, $rootScope, $state, AuthenticationService) {
-    this.scope_ = $scope;
-    this.rootScope_ = $rootScope;
-    this.state_ = $state;
-    this.auth_ = AuthenticationService;
+  constructor($state) {
+    /** @export {!backendApi.Workloads} */
+    this.user;
+    this.state_= $state;
   }
 
   login() {
-    scope_.dataLoading = true;
-    auth_.login(scope_.username, scope_.password, function(response) {
-      if (response.success) {
-        auth_.setCredentials(scope_.username, scope_.password);
-        state_.go('workloads');
-      } else {
-        scope_.error = response.message;
-        scope_.dataLoading = false;
-      }
-    });
+    this.user.username = "abc";
+    this.state_.go('workloads');
   }
 }

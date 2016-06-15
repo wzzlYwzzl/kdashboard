@@ -15,49 +15,49 @@ limitations under the License.
 -->
 
 <kd-info-card>
-  <kd-info-card-header>Resource Details</kd-info-card-header>
-  <kd-info-card-section name="Details">
-    <kd-info-card-entry title="Name">
+  <kd-info-card-header>资源详细信息</kd-info-card-header>
+  <kd-info-card-section name="详细信息">
+    <kd-info-card-entry title="名字">
       <kd-middle-ellipsis
               display-string="{{::$ctrl.replicationController.objectMeta.name}}">
       </kd-middle-ellipsis>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Namespace">
+    <kd-info-card-entry title="命名空间">
       {{::$ctrl.replicationController.objectMeta.namespace}}
     </kd-info-card-entry>
-    <kd-info-card-entry title="Label selector">
+    <kd-info-card-entry title="标签选择器">
       <kd-labels labels="::$ctrl.replicationController.labelSelector"></kd-labels>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Labels">
+    <kd-info-card-entry title="标签">
       <kd-labels labels="::$ctrl.replicationController.objectMeta.labels"></kd-labels>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Images">
+    <kd-info-card-entry title="镜像">
       <div ng-repeat="image in $ctrl.replicationController.containerImages">
         <kd-middle-ellipsis display-string="{{::image}}"></kd-middle-ellipsis>
       </div>
     </kd-info-card-entry>
   </kd-info-card-section>
 
-  <kd-info-card-section name="Status">
-    <kd-info-card-entry title="Pods">
+  <kd-info-card-section name="状态">
+    <kd-info-card-entry title="任务">
       <div ng-if="!$ctrl.areDesiredPodsRunning()">
-        {{::$ctrl.replicationController.podInfo.current}} created,
-        {{::$ctrl.replicationController.podInfo.desired}} desired
+        {{::$ctrl.replicationController.podInfo.current}} 已经被创建,
+        {{::$ctrl.replicationController.podInfo.desired}} 希望被创建
       </div>
       <div ng-if="$ctrl.areDesiredPodsRunning()">
-        {{::$ctrl.replicationController.podInfo.running}} running
+        {{::$ctrl.replicationController.podInfo.running}} 正在运行
       </div>
     </kd-info-card-entry>
     <kd-info-card-entry title="Pods status" ng-if="!$ctrl.areDesiredPodsRunning()">
       <div ng-if="!$ctrl.areDesiredPodsRunning()">
         <div ng-if="::$ctrl.replicationController.podInfo.pending" class="kd-comma-separated-item">
-          {{::$ctrl.replicationController.podInfo.pending}} pending<!-- Collapse whitespace
+          {{::$ctrl.replicationController.podInfo.pending}} 处于等待状态<!-- Collapse whitespace
       --></div>
         <div ng-if="::$ctrl.replicationController.podInfo.failed" class="kd-comma-separated-item">
-          {{::$ctrl.replicationController.podInfo.failed}} failed<!-- Collapse whitespace
+          {{::$ctrl.replicationController.podInfo.failed}} 失败<!-- Collapse whitespace
       --></div>
         <div ng-if="::$ctrl.replicationController.podInfo.running" class="kd-comma-separated-item">
-          {{::$ctrl.replicationController.podInfo.running}} running
+          {{::$ctrl.replicationController.podInfo.running}} 正在运行
         </div>
       </div>
     </kd-info-card-entry>
