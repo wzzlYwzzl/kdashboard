@@ -98,7 +98,7 @@ export default {
      */
     heapsterServerHost: 'http://localhost:8082',
 
-    heapsterServerHost: 'localhost:9080',
+    httpdbServerHost: 'localhost:9080',
   },
 
   /**

@@ -39,6 +39,7 @@ const backendDevArgs = [
   `--apiserver-host=${conf.backend.apiServerHost}`,
   `--port=${conf.backend.devServerPort}`,
   `--heapster-host=${conf.backend.heapsterServerHost}`,
+  `--httpdb-host=${conf.backend.httpdbServerHost}`,
 ];
 
 /**
@@ -50,6 +51,7 @@ const backendArgs = [
   `--apiserver-host=${conf.backend.apiServerHost}`,
   `--port=${conf.frontend.serverPort}`,
   `--heapster-host=${conf.backend.heapsterServerHost}`,
+  `--httpdb-host=${conf.backend.httpdbServerHost}`,
 ];
 
 /**
