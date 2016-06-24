@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // Filter type and source values for events.
-const EVENT_ALL = 'All';
-const EVENT_TYPE_WARNING = 'Warning';
+const EVENT_ALL = '所有';
+const EVENT_TYPE_WARNING = '警告';
 
 /**
  * @final

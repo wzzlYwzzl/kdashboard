@@ -14,8 +14,8 @@
 
 /** Name of the state. Can be used in, e.g., $state.go method. */
 export const stateName = 'workloads';
-//export const stateName = 'user';
+// export const stateName = 'user';
 
 /** Absolute URL of the state. */
 export const stateUrl = '/workloads';
-//export const stateUrl = '/user';
+// export const stateUrl = '/user';

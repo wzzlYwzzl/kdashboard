@@ -43,7 +43,7 @@ export default angular
           'ngResource',
           'ngSanitize',
           'ui.router',
-         // 'ng-admin',
+          // 'ng-admin',
           chromeModule.name,
           deployModule.name,
           errorModule.name,
@@ -58,6 +58,6 @@ export default angular
           podDetailModule.name,
           user.name,
         ])
-   // .config(indexConfig)
+    // .config(indexConfig)
     .config(routeConfig)
     .config(indexConfig);

@@ -132,7 +132,7 @@ gulp.task('serve:prod', ['spawn-backend:prod']);
  * Spawns new backend application process and finishes the task immediately. Previously spawned
  * backend process is killed beforehand, if any. The frontend pages are served by BrowserSync.
  */
-// gulp.task('spawn-backend', ['backend', 'kill-backend', 'locales-for-backend:dev'], function() {
+//gulp.task('spawn-backend', ['backend', 'kill-backend', 'locales-for-backend:dev'], function() {
 gulp.task('spawn-backend', ['kill-backend', 'locales-for-backend:dev'], function() {
   runningBackendProcess = child.spawn(
       path.join(conf.paths.serve, conf.backend.binaryName), backendDevArgs,

@@ -16,7 +16,7 @@ import {actionbarViewName} from 'chrome/chrome_state';
 import {stateName} from './user_state';
 import {stateUrl} from './user_state';
 import {UserController} from './user_controller';
-//import {WorkloadsActionBarController} from './workloadsactionbar_controller';
+// import {WorkloadsActionBarController} from './workloadsactionbar_controller';
 
 /**
  * @param {!ui.router.$stateProvider} $stateProvider

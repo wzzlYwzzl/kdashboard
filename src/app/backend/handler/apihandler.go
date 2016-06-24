@@ -35,6 +35,7 @@ import (
 	resourceService "github.com/kubernetes/dashboard/resource/service"
 	"github.com/kubernetes/dashboard/resource/workload"
 	. "github.com/kubernetes/dashboard/validation"
+	//"github.com/wzzlYwzzl/httpdatabase/resource/user"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 	"k8s.io/kubernetes/pkg/client/unversioned/clientcmd"
 )
@@ -54,6 +55,7 @@ type ApiHandler struct {
 	heapsterClient HeapsterClient
 	clientConfig   clientcmd.ClientConfig
 	verber         common.ResourceVerber
+	httpdbClient   *HttpDBClient
 }
 
 // Web-service filter function used for request and response logging.
@@ -83,10 +85,10 @@ func FormatResponseLog(resp *restful.Response, req *restful.Request) string {
 
 // CreateHttpApiHandler creates a new HTTP handler that handles all requests to the API of the backend.
 func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
-	clientConfig clientcmd.ClientConfig) http.Handler {
+	clientConfig clientcmd.ClientConfig, httpdbClient *HttpDBClient) http.Handler {
 
 	verber := common.NewResourceVerber(client.RESTClient, client.ExtensionsClient.RESTClient)
-	apiHandler := ApiHandler{client, heapsterClient, clientConfig, verber}
+	apiHandler := ApiHandler{client, heapsterClient, clientConfig, verber, httpdbClient}
 	wsContainer := restful.NewContainer()
 
 	deployWs := new(restful.WebService)
@@ -304,6 +306,16 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 			To(apiHandler.handleDeleteResource))
 	wsContainer.Add(resourceVerberWs)
 
+	// userWs := new(restful.WebService)
+	// userWs.Filter(wsLogger)
+	// userWs.Path("/api/v1/user")
+	// userWs.Route(
+	// 	userWs.GET("").
+	// 		To(apiHandler.handleUserInfo).
+	// 		Reads(user.User{}).
+	// 		Writes(user.UserInfo{}))
+	// wsContainer.Add(userWs)
+
 	return wsContainer
 }
 
@@ -439,7 +451,7 @@ func (apiHandler *ApiHandler) handleGetReplicationControllerList(
 func (apiHandler *ApiHandler) handleGetWorkloads(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := workload.GetWorkloads(apiHandler.client, apiHandler.heapsterClient)
+	result, err := workload.GetWorkloads(apiHandler.client, apiHandler.heapsterClient, apiHandler.httpdbClient)
 	if err != nil {
 		handleInternalError(response, err)
 		return

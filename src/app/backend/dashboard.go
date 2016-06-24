@@ -36,12 +36,13 @@ var (
 		"to connect to in the format of protocol://address:port, e.g., "+
 		"http://localhost:8082. If not specified, the assumption is that the binary runs inside a"+
 		"Kubernetes cluster and service proxy will be used.")
+	argHttpDBHost = pflag.String("httpdb-host", "", "The address of the HttpDB server.")
 )
 
 func main() {
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
-	flag.CommandLine.Parse(make([]string,0))  // Init for glog calls in kubernetes packages
+	flag.CommandLine.Parse(make([]string, 0)) // Init for glog calls in kubernetes packages
 
 	log.Printf("Starting HTTP server on port %d", *argPort)
 
@@ -61,10 +62,12 @@ func main() {
 		log.Print("Could not create heapster client: %s. Continuing.", err)
 	}
 
+	httpdbClient := &HttpDBClient{Host: *argHttpDBHost}
+
 	// Run a HTTP server that serves static public files from './public' and handles API calls.
 	// TODO(bryk): Disable directory listing.
 	http.Handle("/", http.FileServer(http.Dir("./public")))
-	http.Handle("/api/", CreateHttpApiHandler(apiserverClient, heapsterRESTClient, config))
+	http.Handle("/api/", CreateHttpApiHandler(apiserverClient, heapsterRESTClient, config, httpdbClient))
 	// TODO(maciaszczykm): Move to /appConfig.json as it was discussed in #640.
 	http.Handle("/api/appConfig.json", AppHandler(ConfigHandler))
 	log.Print(http.ListenAndServe(fmt.Sprintf(":%d", *argPort), nil))

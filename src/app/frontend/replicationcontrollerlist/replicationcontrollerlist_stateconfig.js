@@ -33,7 +33,7 @@ export default function stateConfig($stateProvider) {
     },
     data: {
       [breadcrumbsConfig]: {
-        'label': 'Replication Controllers',
+        'label': '副本控制器',
         'parent': workloadsState,
       },
     },

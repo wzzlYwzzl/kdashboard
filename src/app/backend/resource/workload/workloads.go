@@ -23,6 +23,8 @@ import (
 	"github.com/kubernetes/dashboard/resource/pod"
 	"github.com/kubernetes/dashboard/resource/replicaset"
 	"github.com/kubernetes/dashboard/resource/replicationcontroller"
+	"github.com/kubernetes/dashboard/resource/user"
+	httpdbuser "github.com/wzzlYwzzl/httpdatabase/resource/user"
 	k8sClient "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
@@ -35,11 +37,13 @@ type Workloads struct {
 	ReplicationControllerList replicationcontroller.ReplicationControllerList `json:"replicationControllerList"`
 
 	PodList pod.PodList `json:"podList"`
+
+	UserList httpdbuser.UserList `json:"userlist"`
 }
 
 // GetWorkloads returns a list of all workloads in the cluster.
 func GetWorkloads(client k8sClient.Interface,
-	heapsterClient client.HeapsterClient) (*Workloads, error) {
+	heapsterClient client.HeapsterClient, httpdbClient *client.HttpDBClient) (*Workloads, error) {
 
 	log.Printf("Getting lists of all workloads")
 	channels := &common.ResourceChannels{
@@ -50,21 +54,23 @@ func GetWorkloads(client k8sClient.Interface,
 		PodList:                   common.GetPodListChannel(client, 4),
 		EventList:                 common.GetEventListChannel(client, 3),
 		NodeList:                  common.GetNodeListChannel(client, 3),
+		UserList:                  common.GetUserListChannel(httpdbClient, 2),
 	}
 
-	return GetWorkloadsFromChannels(channels, heapsterClient)
+	return GetWorkloadsFromChannels(channels, heapsterClient, httpdbClient)
 }
 
 // GetWorkloadsFromChannels returns a list of all workloads in the cluster, from the
 // channel sources.
 func GetWorkloadsFromChannels(channels *common.ResourceChannels,
-	heapsterClient client.HeapsterClient) (*Workloads, error) {
+	heapsterClient client.HeapsterClient, httpdbClient *client.HttpDBClient) (*Workloads, error) {
 
 	rsChan := make(chan *replicaset.ReplicaSetList)
 	deploymentChan := make(chan *deployment.DeploymentList)
 	rcChan := make(chan *replicationcontroller.ReplicationControllerList)
 	podChan := make(chan *pod.PodList)
-	errChan := make(chan error, 4)
+	errChan := make(chan error, 5)
+	userChan := make(chan *httpdbuser.UserList)
 
 	go func() {
 		rcList, err := replicationcontroller.GetReplicationControllerListFromChannels(channels)
@@ -88,6 +94,12 @@ func GetWorkloadsFromChannels(channels *common.ResourceChannels,
 		podList, err := pod.GetPodListFromChannels(channels, heapsterClient)
 		errChan <- err
 		podChan <- podList
+	}()
+
+	go func() {
+		userList, err := user.GetUserListFromChannels(channels, httpdbClient)
+		userChan <- userList
+		errChan <- err
 	}()
 
 	rcList := <-rcChan
@@ -114,11 +126,18 @@ func GetWorkloadsFromChannels(channels *common.ResourceChannels,
 		return nil, err
 	}
 
+	userList := <-userChan
+	err = <-errChan
+	if err != nil {
+		return nil, err
+	}
+
 	workloads := &Workloads{
 		ReplicaSetList:            *rsList,
 		ReplicationControllerList: *rcList,
 		DeploymentList:            *deploymentList,
 		PodList:                   *podList,
+		UserList:                  *userList,
 	}
 
 	return workloads, nil

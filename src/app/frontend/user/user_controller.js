@@ -20,14 +20,17 @@ export class UserController {
    * @param {!backendApi.Workloads} workloads
    * @ngInject
    */
-  constructor($state) {
+  constructor($state, $scope, $rootScope) {
     /** @export {!backendApi.Workloads} */
     this.user;
-    this.state_= $state;
+    this.rootScope_ = $rootScope;
+    this.state_ = $state;
+    this.scope_ = $scope;
   }
 
   login() {
-    this.user.username = "abc";
-    this.state_.go('workloads');
+    //this.user.username = 'abc';
+    // this.state_.go('workloads');
+    this.message = this.user.username;
   }
 }

@@ -15,6 +15,8 @@
 package common
 
 import (
+	httpdbclient "github.com/kubernetes/dashboard/client"
+	"github.com/wzzlYwzzl/httpdatabase/resource/user"
 	"k8s.io/kubernetes/pkg/api"
 	"k8s.io/kubernetes/pkg/apis/extensions"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
@@ -57,6 +59,9 @@ type ResourceChannels struct {
 
 	// List and error channels to Nodes.
 	NodeList NodeListChannel
+
+	//List and error channels to Users
+	UserList UserListChannel
 }
 
 // List and error channels to Services.
@@ -300,6 +305,29 @@ func GetDaemonSetListChannel(client client.DaemonSetsNamespacer, numReads int) D
 
 	go func() {
 		rcs, err := client.DaemonSets(api.NamespaceAll).List(listEverything)
+		for i := 0; i < numReads; i++ {
+			channel.List <- rcs
+			channel.Error <- err
+		}
+	}()
+
+	return channel
+}
+
+//List and error channels to Nodes
+type UserListChannel struct {
+	List  chan *user.UserList
+	Error chan error
+}
+
+func GetUserListChannel(client *httpdbclient.HttpDBClient, numReads int) UserListChannel {
+	channel := UserListChannel{
+		List:  make(chan *user.UserList, numReads),
+		Error: make(chan error, numReads),
+	}
+
+	go func() {
+		rcs, err := client.GetAllUserInfo()
 		for i := 0; i < numReads; i++ {
 			channel.List <- rcs
 			channel.Error <- err
