@@ -97,6 +97,8 @@ export default {
      * will attempt to connect to Heapster via a service proxy.
      */
     heapsterServerHost: 'http://localhost:8082',
+
+    heapsterServerHost: 'localhost:9080',
   },
 
   /**
