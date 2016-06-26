@@ -30,7 +30,7 @@ import serviceDetailModule from './servicedetail/servicedetail_module';
 import serviceListModule from './servicelist/servicelist_module';
 import workloadsModule from './workloads/workloads_module';
 import podDetailModule from './poddetail/poddetail_module';
-import user from './user/user_module';
+import userLogin from './userlogin/user_module';
 
 export default angular
     .module(
@@ -56,7 +56,7 @@ export default angular
           serviceDetailModule.name,
           serviceListModule.name,
           podDetailModule.name,
-          user.name,
+          userLogin.name,
         ])
     // .config(indexConfig)
     .config(routeConfig)

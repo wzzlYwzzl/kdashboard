@@ -21,6 +21,7 @@ import (
 	"net/http"
 
 	// TODO(maciaszczykm): Avoid using dot-imports.
+	"github.com/astaxie/beego/session"
 	. "github.com/kubernetes/dashboard/client"
 	. "github.com/kubernetes/dashboard/handler"
 	"github.com/spf13/pflag"
@@ -37,6 +38,9 @@ var (
 		"http://localhost:8082. If not specified, the assumption is that the binary runs inside a"+
 		"Kubernetes cluster and service proxy will be used.")
 	argHttpDBHost = pflag.String("httpdb-host", "", "The address of the HttpDB server.")
+
+	//global session statement
+	globalSessions *session.Manager
 )
 
 func main() {
@@ -62,12 +66,13 @@ func main() {
 		log.Print("Could not create heapster client: %s. Continuing.", err)
 	}
 
+	//set the argument of the httpdatabase server
 	httpdbClient := &HttpDBClient{Host: *argHttpDBHost}
 
 	// Run a HTTP server that serves static public files from './public' and handles API calls.
 	// TODO(bryk): Disable directory listing.
 	http.Handle("/", http.FileServer(http.Dir("./public")))
-	http.Handle("/api/", CreateHttpApiHandler(apiserverClient, heapsterRESTClient, config, httpdbClient))
+	http.Handle("/api/", CreateHttpApiHandler(apiserverClient, heapsterRESTClient, config, httpdbClient, globalSessions))
 	// TODO(maciaszczykm): Move to /appConfig.json as it was discussed in #640.
 	http.Handle("/api/appConfig.json", AppHandler(ConfigHandler))
 	log.Print(http.ListenAndServe(fmt.Sprintf(":%d", *argPort), nil))
@@ -82,4 +87,9 @@ func handleFatalInitError(err error) {
 		"This most likely means that the cluster is misconfigured (e.g., it has "+
 		"invalid apiserver certificates or service accounts configuration) or the "+
 		"--apiserver-host param points to a server that does not exist. Reason: %s", err)
+}
+
+func init() {
+	globalSessions, _ = session.NewManager("memory", `{"cookieName":"gosessionid","gclifetime":3600}`)
+	go globalSessions.GC()
 }

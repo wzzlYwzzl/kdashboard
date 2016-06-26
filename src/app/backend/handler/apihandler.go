@@ -15,11 +15,13 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/astaxie/beego/session"
 	restful "github.com/emicklei/go-restful"
 	// TODO(maciaszczykm): Avoid using dot-imports.
 	. "github.com/kubernetes/dashboard/client"
@@ -33,9 +35,11 @@ import (
 	. "github.com/kubernetes/dashboard/resource/replicationcontroller"
 	. "github.com/kubernetes/dashboard/resource/secret"
 	resourceService "github.com/kubernetes/dashboard/resource/service"
+	"github.com/kubernetes/dashboard/resource/user"
 	"github.com/kubernetes/dashboard/resource/workload"
 	. "github.com/kubernetes/dashboard/validation"
 	//"github.com/wzzlYwzzl/httpdatabase/resource/user"
+	httpdbuser "github.com/wzzlYwzzl/httpdatabase/resource/user"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 	"k8s.io/kubernetes/pkg/client/unversioned/clientcmd"
 )
@@ -56,6 +60,7 @@ type ApiHandler struct {
 	clientConfig   clientcmd.ClientConfig
 	verber         common.ResourceVerber
 	httpdbClient   *HttpDBClient
+	globalSessions *session.Manager
 }
 
 // Web-service filter function used for request and response logging.
@@ -85,10 +90,10 @@ func FormatResponseLog(resp *restful.Response, req *restful.Request) string {
 
 // CreateHttpApiHandler creates a new HTTP handler that handles all requests to the API of the backend.
 func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
-	clientConfig clientcmd.ClientConfig, httpdbClient *HttpDBClient) http.Handler {
+	clientConfig clientcmd.ClientConfig, httpdbClient *HttpDBClient, globalSessions *session.Manager) http.Handler {
 
 	verber := common.NewResourceVerber(client.RESTClient, client.ExtensionsClient.RESTClient)
-	apiHandler := ApiHandler{client, heapsterClient, clientConfig, verber, httpdbClient}
+	apiHandler := ApiHandler{client, heapsterClient, clientConfig, verber, httpdbClient, globalSessions}
 	wsContainer := restful.NewContainer()
 
 	deployWs := new(restful.WebService)
@@ -306,15 +311,24 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 			To(apiHandler.handleDeleteResource))
 	wsContainer.Add(resourceVerberWs)
 
-	// userWs := new(restful.WebService)
-	// userWs.Filter(wsLogger)
-	// userWs.Path("/api/v1/user")
-	// userWs.Route(
-	// 	userWs.GET("").
-	// 		To(apiHandler.handleUserInfo).
-	// 		Reads(user.User{}).
-	// 		Writes(user.UserInfo{}))
-	// wsContainer.Add(userWs)
+	loginWs := new(restful.WebService)
+	loginWs.Filter(wsLogger)
+	loginWs.Path("/api/v1/login")
+	loginWs.Route(
+		loginWs.POST("").
+			To(apiHandler.handleUserLogin).
+			Reads(user.User{}))
+	wsContainer.Add(loginWs)
+
+	userWs := new(restful.WebService)
+	userWs.Filter(wsLogger)
+	userWs.Path("/api/v1/users").
+		Produces(restful.MIME_JSON)
+	userWs.Route(
+		userWs.GET("").
+			To(apiHandler.handleGetUsers).
+			Writes(httpdbuser.UserList{}))
+	wsContainer.Add(userWs)
 
 	return wsContainer
 }
@@ -757,4 +771,51 @@ func (apiHandler *ApiHandler) handleDeleteDaemonSet(
 	}
 
 	response.WriteHeader(http.StatusOK)
+}
+
+//handle user login
+func (apiHandler *ApiHandler) handleUserLogin(request *restful.Request, response *restful.Response) {
+	userpasswd := new(user.User)
+	err := request.ReadEntity(userpasswd)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	userinfo, err := user.JudgeUser(apiHandler.httpdbClient, userpasswd)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	} else if userinfo == nil {
+		response.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	//translate all the user's information to string.
+	cpus := strconv.Itoa(userinfo.Cpus)
+	memeory := strconv.Itoa(userinfo.Memory)
+	cpususe := strconv.Itoa(userinfo.CpusUse)
+	memuse := strconv.Itoa(userinfo.MemoryUse)
+	allinfo, _ := json.Marshal(userinfo)
+
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	sess.Set("username", userinfo.Name)
+	sess.Set("cpus", cpus)
+	sess.Set("memeory", memeory)
+	sess.Set("cpususe", cpususe)
+	sess.Set("memoryuse", memuse)
+	sess.Set("allinfo", allinfo)
+
+	response.WriteHeader(http.StatusAccepted)
+}
+
+//handle user list
+func (apiHandler *ApiHandler) handleGetUsers(request *restful.Request, response *restful.Response) {
+	result, err := user.GetUserList(apiHandler.httpdbClient)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	response.WriteHeaderAndEntity(http.StatusCreated, result)
 }

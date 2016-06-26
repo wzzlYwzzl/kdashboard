@@ -57,9 +57,9 @@ func (apiHandler *ApiHandler) CreateApiHandler() http.Handler {
 	userWs.Path("/api/v1/user").
 		//Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON)
-	userWs.Route(userWs.GET("/{name}").
+	userWs.Route(userWs.GET("/{name}/{password}").
 		To(apiHandler.judgeUser))
-	userWs.Route(userWs.GET("/{name}/{namespaces}").
+	userWs.Route(userWs.POST("/{name}/{namespaces}").
 		To(apiHandler.createNS))
 	userWs.Route(userWs.GET("/ns/{name}").
 		To(apiHandler.getNS))
@@ -85,10 +85,11 @@ func (apiHandler *ApiHandler) CreateApiHandler() http.Handler {
 }
 
 func (apiHandler *ApiHandler) judgeUser(request *restful.Request, response *restful.Response) {
-	name := request.PathParameter("name")
 	apiHandler.userns = new(user.User)
+	name := request.PathParameter("name")
+	password := request.PathParameter("password")
 	apiHandler.userns.Name = name
-	log.Printf("judgeUser")
+	apiHandler.userns.Password = password
 
 	b, err := apiHandler.userns.JudgeExist(apiHandler.DBconf)
 	if err != nil {

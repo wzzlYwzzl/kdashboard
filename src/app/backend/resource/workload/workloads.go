@@ -38,7 +38,7 @@ type Workloads struct {
 
 	PodList pod.PodList `json:"podList"`
 
-	UserList httpdbuser.UserList `json:"userlist"`
+	UserList httpdbuser.UserList `json:"userList"`
 }
 
 // GetWorkloads returns a list of all workloads in the cluster.

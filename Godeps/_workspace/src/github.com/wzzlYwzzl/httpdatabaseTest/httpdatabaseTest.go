@@ -8,13 +8,13 @@ import (
 	"github.com/wzzlYwzzl/httpdatabase/resource/user"
 )
 
-func main() {
+func TestBasic() {
 	clientConf := client.Client{Host: "localhost:9080"}
 	user := &user.User{Name: "test-zjw", Password: "test-zjw", Cpus: 10, Memory: 500, CpusUse: 8, MemoryUse: 123}
 
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	//test 1
-	b, err := clientConf.JudgeName("admin")
+	b, err := clientConf.JudgeName("admin", "admin123")
 	if err != nil {
 		fmt.Println("judegeName Error")
 		return

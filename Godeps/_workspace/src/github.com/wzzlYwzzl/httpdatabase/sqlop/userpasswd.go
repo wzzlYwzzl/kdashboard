@@ -65,6 +65,19 @@ func (u UserInfo) Connect(mydb *MysqlCon) (*sql.DB, error) {
 	return db, nil
 }
 
+func (u *UserInfo) QueryOne(db *sql.DB) error {
+	qstr := "SELECT name,password,cpus,memory FROM " + defaultUserTable + " WHERE name=? and password=?"
+	row := db.QueryRow(qstr, u.Name, u.Password)
+
+	err := row.Scan(&u.Name, &u.Password, &u.Cpus, &u.Mem)
+	if err != nil {
+		log.Println("row.Scan error :", err)
+		return err
+	}
+
+	return nil
+}
+
 func (u *UserInfo) Query(db *sql.DB) error {
 	qstr := "SELECT name,password,cpus,memory FROM " + defaultUserTable + " WHERE name=?"
 	row := db.QueryRow(qstr, u.Name)

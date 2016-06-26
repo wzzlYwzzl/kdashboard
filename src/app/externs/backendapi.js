@@ -449,5 +449,25 @@ backendApi.SecretSpec;
  */
 backendApi.SecretsList;
 
+/**
+ * @typedef {{
+ *   name: string,
+ *   password: string,
+ *   namespaces: !Array<string>
+ *   cpus: number,
+ *   memory: number,
+ *   cpususe: number,
+ *   memoryuse: number,
+ * }}
+ */
+backendApi.User;
+
+/**
+ * @typedef {{
+ *   userList: !Array<!backendApi.User>
+ * }}
+ */
+backendApi.UserList;
+
 /** @typedef {{serverTime: number}} */
 const appConfig_DO_NOT_USE_DIRECTLY = {};

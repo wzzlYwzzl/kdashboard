@@ -14,8 +14,8 @@ type Client struct {
 	Host string
 }
 
-func (c Client) JudgeName(name string) (bool, error) {
-	url := "http://" + c.Host + "/api/v1/user/" + name
+func (c Client) JudgeName(name string, password string) (bool, error) {
+	url := "http://" + c.Host + "/api/v1/user/" + name + "/" + password
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Println(err)
@@ -31,8 +31,9 @@ func (c Client) JudgeName(name string) (bool, error) {
 
 func (c Client) CreateNS(name, namespace string) (bool, error) {
 	url := "http://" + c.Host + "/api/v1/user/" + name + "/" + namespace
-	resp, err := http.Get(url)
+	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
+		log.Println(err)
 		return false, err
 	}
 

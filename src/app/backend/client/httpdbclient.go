@@ -14,8 +14,8 @@ type HttpDBClient struct {
 	Host string
 }
 
-func (c HttpDBClient) JudgeName(name string) (bool, error) {
-	url := "http://" + c.Host + "/api/v1/user/" + name
+func (c HttpDBClient) JudgeName(name string, password string) (bool, error) {
+	url := "http://" + c.Host + "/api/v1/user/" + name + "/" + password
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Println(err)
@@ -31,8 +31,9 @@ func (c HttpDBClient) JudgeName(name string) (bool, error) {
 
 func (c HttpDBClient) CreateNS(name, namespace string) (bool, error) {
 	url := "http://" + c.Host + "/api/v1/user/" + name + "/" + namespace
-	resp, err := http.Get(url)
+	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
+		log.Println(err)
 		return false, err
 	}
 

@@ -1,0 +1,22 @@
+<!--<div  class="userstyle"><div  layout="colums" layout-align="center center"> -->
+<div class="login_style">
+<div layout="colums" layout-align="center center">
+   <md-icon md-font-set="material-icons" class="usericon" >account_circle</md-icon>
+</div>
+<div  layout="colums" class="userstyle" layout-align="center center">
+<form name="user" role="form" ng-submit="ctrl.login()">
+  <md-input-container class="md-block" >
+    <label>用户名</label>
+    <input type="text" name="username" ng-model="ctrl.user.username"  required>
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>密码</label>
+    <input name="password" required type="password" minlength="6" ng-model="ctrl.user.password" maxlength="20">
+  </md-input-container>
+  <div>{{ctrl.message}}</div>
+  <md-button type="submit" class="md-raised md-primary">
+    登录
+  </md-button>
+</form>
+</div>
+</div>

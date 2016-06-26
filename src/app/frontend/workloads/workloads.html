@@ -62,3 +62,15 @@ limitations under the License.
     </kd-pod-card-list>
   </kd-content>
 </kd-content-card>
+
+<kd-content-card ng-if="$ctrl.workloads.userList.userList.length">
+  <kd-title>
+    <a ui-sref="pods">
+      用户
+    </a>
+  </kd-title>
+  <kd-content>
+    <!-- <kd-pod-card-list pod-list="$ctrl.workloads.podList">
+    </kd-pod-card-list> -->
+  </kd-content>
+</kd-content-card>
