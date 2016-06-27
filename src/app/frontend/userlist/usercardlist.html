@@ -1,0 +1,43 @@
+<kd-resource-card-list selectable="::$ctrl.selectable" with-statuses="::$ctrl.withStatuses"
+                       ng-if="::$ctrl.userList.userList">
+<kd-resource-card-header-columns>
+    <kd-resource-card-header-column size="medium" grow="nogrow">用户名</kd-resource-card-header-column>
+    <kd-resource-card-header-column size="small"  grow="4">命名空间</kd-resource-card-header-column>
+    <kd-resource-card-header-column size="small" grow="nogrow">
+      CPU配额
+    </kd-resource-card-header-column>
+    <kd-resource-card-header-column >内存配额(MB)</kd-resource-card-header-column>
+    <kd-resource-card-header-column>CPU已用</kd-resource-card-header-column>
+    <kd-resource-card-header-column>内存已用(MB)</kd-resource-card-header-column>
+    <kd-resource-card-header-column size="small" grow="nogrow">
+    </kd-resource-card-header-column>
+  </kd-resource-card-header-columns>
+
+  <kd-resource-card ng-repeat="user in $ctrl.userList.userList" type-meta="user" object-meta="user">
+    <kd-resource-card-columns>
+        <kd-resource-card-column>
+            <div>
+                   {{user.name}}     
+            </div>
+        </kd-resource-card-column>
+        <kd-resource-card-column>
+            {{user.namespaces}}
+        </kd-resource-card-column>  
+        <kd-resource-card-column>
+             {{user.cpus}}
+        </kd-resource-card-column>
+        <kd-resource-card-column>
+            {{user.memory}}
+        </kd-resource-card-column>
+        <kd-resource-card-column>
+            {{user.cpususe}}
+        </kd-resource-card-column>
+        <kd-resource-card-column>
+            {{user.memoryuse}}
+        </kd-resource-card-column>
+        <kd-resource-card-column>
+        </kd-resource-card-column>
+    </kd-resource-card-columns>
+  </kd-resource-card>
+</kd-resource-card-list>
+

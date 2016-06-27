@@ -1,15 +1,15 @@
 /**
- * Controller for the pod list view.
+ * Controller for the user list view.
  *
  * @final
  */
 export class UserListController {
-    /**
-   * @param {!backendApi.PodList} podList
-   * @ngInject
-   */
-    constructor(userList) {
-        /** @export {!backendApi.UserList} */
-        this.userList = userList;
-    }
+  /**
+ * @param {!backendApi.UserList} userList
+ * @ngInject
+ */
+  constructor(userList) {
+    /** @export {!backendApi.UserList} */
+    this.userList = userList;
+  }
 }

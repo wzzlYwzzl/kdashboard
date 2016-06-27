@@ -1,4 +1,4 @@
-import {stateName as adduser} from 'adduser/adduser_state';
+//import {stateName as adduser} from 'adduser/adduser_state';
 
 /**
  * @final
@@ -16,5 +16,5 @@ export class UserListActionBarController {
   /**
    * @export
    */
-  redirectToAddUserPage() { this.state_.go(adduser); }
+  redirectToAddUserPage() { this.state_.go(uselist) }
 }

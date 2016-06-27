@@ -13,6 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+<kd-content-card ng-if="$ctrl.workloads.userList.userList.length">
+  <kd-title>
+    <a ui-sref="users">
+      用户
+    </a>
+  </kd-title>
+  <kd-content>
+    <kd-user-card-list user-list="$ctrl.workloads.userList">
+    </kd-user-card-list> 
+  </kd-content>
+</kd-content-card>
 
 <kd-content-card ng-if=$ctrl.workloads.deploymentList.deployments.length>
   <kd-title>
@@ -60,17 +71,5 @@ limitations under the License.
   <kd-content>
     <kd-pod-card-list pod-list="$ctrl.workloads.podList">
     </kd-pod-card-list>
-  </kd-content>
-</kd-content-card>
-
-<kd-content-card ng-if="$ctrl.workloads.userList.userList.length">
-  <kd-title>
-    <a ui-sref="pods">
-      用户
-    </a>
-  </kd-title>
-  <kd-content>
-    <!-- <kd-pod-card-list pod-list="$ctrl.workloads.podList">
-    </kd-pod-card-list> -->
   </kd-content>
 </kd-content-card>

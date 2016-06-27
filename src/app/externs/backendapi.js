@@ -113,6 +113,7 @@ backendApi.ReplicationControllerList;
  *   replicationControllers: !backendApi.ReplicationControllerList,
  *   replicaSets: !backendApi.ReplicaSetList,
  *   pods: !backendApi.PodList
+ *   userList: !backendApi.UserList
  * }}
  */
 backendApi.Workloads;

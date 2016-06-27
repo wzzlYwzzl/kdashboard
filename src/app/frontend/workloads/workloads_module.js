@@ -17,6 +17,7 @@ import deploymentListModule from 'deploymentlist/deploymentlist_module';
 import filtersModule from 'common/filters/filters_module';
 import replicationControllerListModule from 'replicationcontrollerlist/replicationcontrollerlist_module';
 import replicaSetListModule from 'replicasetlist/replicasetlist_module';
+import userListModule from 'userlist/userlist_module';
 import stateConfig from './workloads_stateconfig';
 
 /**
@@ -35,5 +36,6 @@ export default angular
           replicationControllerListModule.name,
           replicaSetListModule.name,
           deploymentListModule.name,
+          userListModule.name,
         ])
     .config(stateConfig);

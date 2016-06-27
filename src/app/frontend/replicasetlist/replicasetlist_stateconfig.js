@@ -33,7 +33,7 @@ export default function stateConfig($stateProvider) {
     },
     data: {
       [breadcrumbsConfig]: {
-        'label': 'Replica Sets',
+        'label': '副本集',
         'parent': workloadsState,
       },
     },

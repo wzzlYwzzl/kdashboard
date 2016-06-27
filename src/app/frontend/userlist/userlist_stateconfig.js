@@ -12,30 +12,30 @@ import {UserListActionBarController} from './userlistactionbar_controller';
  * @ngInject
  */
 export default function stateConfig($stateProvider) {
-    $stateProvider.state(stateName, {
-        url: stateUrl,
-        resolve: {
-            'userList': resolveUserList,
-        },
-        data: {
-            [breadcrumbsConfig]: {
-                'label': '用户',
-                'parent': 'workloadsState',
-            },
-        },
-        view: {
-            '': {
-                controller: UserListController,
-                controllerAs: '$ctrl',
-                templateUrl: 'userlist/userlist.html',
-            },
-            [actionbarViewName]: {
-                controller: UserListActionBarController,
-                controllerAs: 'ctrl',
-                templateUrl: 'userlist/userlistactionbar.html',
-            },
-        },
-    });
+  $stateProvider.state(stateName, {
+    url: stateUrl,
+    resolve: {
+      'userList': resolveUserList,
+    },
+    data: {
+      [breadcrumbsConfig]: {
+        'label': '用户',
+        'parent': workloadsState,
+      },
+    },
+    views: {
+      '': {
+        controller: UserListController,
+        controllerAs: '$ctrl',
+        templateUrl: 'userlist/userlist.html',
+      },
+      [actionbarViewName]: {
+        controller: UserListActionBarController,
+        controllerAs: 'ctrl',
+        templateUrl: 'userlist/userlistactionbar.html',
+      },
+    },
+  });
 }
 
 /**
@@ -44,6 +44,7 @@ export default function stateConfig($stateProvider) {
  * @ngInject
  */
 export function resolveUserList($resource) {
-    let resource = $resource('api/v1/users');
-    return resource.get().$promise;
+   /** @type {!angular.Resource<!backendApi.UserList>} */
+  let resource = $resource('api/v1/users');
+  return resource.get().$promise;
 }
