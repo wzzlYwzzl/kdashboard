@@ -16,5 +16,5 @@ export class UserListActionBarController {
   /**
    * @export
    */
-  redirectToAddUserPage() { this.state_.go(uselist) }
+  redirectToAddUserPage() { this.state_.go(uselist); }
 }

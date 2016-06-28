@@ -15,7 +15,7 @@
 package handler
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -328,6 +328,9 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 		userWs.GET("").
 			To(apiHandler.handleGetUsers).
 			Writes(httpdbuser.UserList{}))
+	userWs.Route(
+		userWs.DELETE("/{name}").
+			To(apiHandler.handleDeleteUser))
 	wsContainer.Add(userWs)
 
 	return wsContainer
@@ -452,7 +455,7 @@ func (apiHandler *ApiHandler) handleGetAvailableProcotols(request *restful.Reque
 func (apiHandler *ApiHandler) handleGetReplicationControllerList(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := GetReplicationControllerList(apiHandler.client)
+	result, err := GetReplicationControllerList(apiHandler.client, nil)
 	if err != nil {
 		handleInternalError(response, err)
 		return
@@ -465,8 +468,28 @@ func (apiHandler *ApiHandler) handleGetReplicationControllerList(
 func (apiHandler *ApiHandler) handleGetWorkloads(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := workload.GetWorkloads(apiHandler.client, apiHandler.heapsterClient, apiHandler.httpdbClient)
+	var namespaces []string
+
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	log.Println("handleGetWorkloads: ", allinfo)
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	userinfo := allinfo.(httpdbuser.User)
+
+	if userinfo.Name == "admin" {
+		namespaces = nil
+	} else {
+		namespaces = userinfo.Namespaces
+	}
+
+	//namespaces = userinfo.Namespaces
+	result, err := workload.GetWorkloads(apiHandler.client, apiHandler.heapsterClient, apiHandler.httpdbClient, namespaces)
 	if err != nil {
+		log.Println("getworkloads error :", err)
 		handleInternalError(response, err)
 		return
 	}
@@ -478,7 +501,7 @@ func (apiHandler *ApiHandler) handleGetWorkloads(
 func (apiHandler *ApiHandler) handleGetReplicaSets(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := replicaset.GetReplicaSetList(apiHandler.client)
+	result, err := replicaset.GetReplicaSetList(apiHandler.client, nil)
 	if err != nil {
 		handleInternalError(response, err)
 		return
@@ -507,7 +530,7 @@ func (apiHandler *ApiHandler) handleGetReplicaSetDetail(
 func (apiHandler *ApiHandler) handleGetDeployments(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := deployment.GetDeploymentList(apiHandler.client)
+	result, err := deployment.GetDeploymentList(apiHandler.client, nil)
 	if err != nil {
 		handleInternalError(response, err)
 		return
@@ -520,7 +543,7 @@ func (apiHandler *ApiHandler) handleGetDeployments(
 func (apiHandler *ApiHandler) handleGetPods(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := pod.GetPodList(apiHandler.client, apiHandler.heapsterClient)
+	result, err := pod.GetPodList(apiHandler.client, apiHandler.heapsterClient, nil)
 	if err != nil {
 		handleInternalError(response, err)
 		return
@@ -638,12 +661,22 @@ func (apiHandler *ApiHandler) handleGetReplicationControllerPods(
 // Handles namespace creation API call.
 func (apiHandler *ApiHandler) handleCreateNamespace(request *restful.Request,
 	response *restful.Response) {
+
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	userinfo := allinfo.(httpdbuser.User)
+
 	namespaceSpec := new(NamespaceSpec)
 	if err := request.ReadEntity(namespaceSpec); err != nil {
 		handleInternalError(response, err)
 		return
 	}
-	if err := CreateNamespace(namespaceSpec, apiHandler.client); err != nil {
+	if err := CreateNamespace(namespaceSpec, apiHandler.client, apiHandler.httpdbClient, userinfo.Name); err != nil {
 		handleInternalError(response, err)
 		return
 	}
@@ -655,7 +688,16 @@ func (apiHandler *ApiHandler) handleCreateNamespace(request *restful.Request,
 func (apiHandler *ApiHandler) handleGetNamespaces(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := GetNamespaceList(apiHandler.client)
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	userinfo := allinfo.(httpdbuser.User)
+
+	result, err := GetNamespaceFromDB(apiHandler.httpdbClient, userinfo.Name)
 	if err != nil {
 		handleInternalError(response, err)
 		return
@@ -781,7 +823,7 @@ func (apiHandler *ApiHandler) handleUserLogin(request *restful.Request, response
 		handleInternalError(response, err)
 		return
 	}
-
+	log.Println("handleUserLogin: ", userpasswd)
 	userinfo, err := user.JudgeUser(apiHandler.httpdbClient, userpasswd)
 	if err != nil {
 		handleInternalError(response, err)
@@ -791,27 +833,16 @@ func (apiHandler *ApiHandler) handleUserLogin(request *restful.Request, response
 		return
 	}
 
-	//translate all the user's information to string.
-	cpus := strconv.Itoa(userinfo.Cpus)
-	memeory := strconv.Itoa(userinfo.Memory)
-	cpususe := strconv.Itoa(userinfo.CpusUse)
-	memuse := strconv.Itoa(userinfo.MemoryUse)
-	allinfo, _ := json.Marshal(userinfo)
-
 	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
-	sess.Set("username", userinfo.Name)
-	sess.Set("cpus", cpus)
-	sess.Set("memeory", memeory)
-	sess.Set("cpususe", cpususe)
-	sess.Set("memoryuse", memuse)
-	sess.Set("allinfo", allinfo)
+
+	sess.Set("allinfo", *userinfo)
 
 	response.WriteHeader(http.StatusAccepted)
 }
 
 //handle user list
 func (apiHandler *ApiHandler) handleGetUsers(request *restful.Request, response *restful.Response) {
-	result, err := user.GetUserList(apiHandler.httpdbClient)
+	result, err := user.GetUserList(apiHandler.httpdbClient, nil)
 	if err != nil {
 		handleInternalError(response, err)
 		return

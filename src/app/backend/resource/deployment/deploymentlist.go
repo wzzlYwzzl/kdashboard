@@ -46,7 +46,7 @@ type Deployment struct {
 }
 
 // GetDeploymentList returns a list of all Deployments in the cluster.
-func GetDeploymentList(client client.Interface) (*DeploymentList, error) {
+func GetDeploymentList(client client.Interface, namespaces []string) (*DeploymentList, error) {
 	log.Printf("Getting list of all deployments in the cluster")
 
 	channels := &common.ResourceChannels{
@@ -57,12 +57,12 @@ func GetDeploymentList(client client.Interface) (*DeploymentList, error) {
 		NodeList:       common.GetNodeListChannel(client, 1),
 	}
 
-	return GetDeploymentListFromChannels(channels)
+	return GetDeploymentListFromChannels(channels, namespaces)
 }
 
 // GetDeploymentList returns a list of all Deployments in the cluster
 // reading required resource list once from the channels.
-func GetDeploymentListFromChannels(channels *common.ResourceChannels) (
+func GetDeploymentListFromChannels(channels *common.ResourceChannels, namespaces []string) (
 	*DeploymentList, error) {
 
 	deployments := <-channels.DeploymentList.List
@@ -99,8 +99,14 @@ func GetDeploymentListFromChannels(channels *common.ResourceChannels) (
 		return nil, err
 	}
 
-	return getDeploymentList(deployments.Items, services.Items, pods.Items, events.Items,
-		nodes.Items), nil
+	result := getDeploymentList(deployments.Items, services.Items, pods.Items, events.Items,
+		nodes.Items)
+
+	if namespaces != nil {
+		return FilterByNamespace(namespaces, result), nil
+	}
+
+	return result, nil
 }
 
 func getDeploymentList(deployments []extensions.Deployment,
@@ -127,4 +133,20 @@ func getDeploymentList(deployments []extensions.Deployment,
 	}
 
 	return deploymentList
+}
+
+func FilterByNamespace(namespaces []string, dp *DeploymentList) *DeploymentList {
+	res := make([]Deployment, 0)
+	result := new(DeploymentList)
+	for _, v1 := range dp.Deployments {
+		for _, v2 := range namespaces {
+			if v2 == v1.ObjectMeta.Namespace {
+				res = append(res, v1)
+				break
+			}
+		}
+	}
+
+	result.Deployments = res
+	return result
 }

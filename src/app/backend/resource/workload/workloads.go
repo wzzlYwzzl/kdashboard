@@ -43,7 +43,7 @@ type Workloads struct {
 
 // GetWorkloads returns a list of all workloads in the cluster.
 func GetWorkloads(client k8sClient.Interface,
-	heapsterClient client.HeapsterClient, httpdbClient *client.HttpDBClient) (*Workloads, error) {
+	heapsterClient client.HeapsterClient, httpdbClient *client.HttpDBClient, namespaces []string) (*Workloads, error) {
 
 	log.Printf("Getting lists of all workloads")
 	channels := &common.ResourceChannels{
@@ -57,13 +57,13 @@ func GetWorkloads(client k8sClient.Interface,
 		UserList:                  common.GetUserListChannel(httpdbClient, 2),
 	}
 
-	return GetWorkloadsFromChannels(channels, heapsterClient, httpdbClient)
+	return GetWorkloadsFromChannels(channels, heapsterClient, httpdbClient, namespaces)
 }
 
 // GetWorkloadsFromChannels returns a list of all workloads in the cluster, from the
 // channel sources.
 func GetWorkloadsFromChannels(channels *common.ResourceChannels,
-	heapsterClient client.HeapsterClient, httpdbClient *client.HttpDBClient) (*Workloads, error) {
+	heapsterClient client.HeapsterClient, httpdbClient *client.HttpDBClient, namespaces []string) (*Workloads, error) {
 
 	rsChan := make(chan *replicaset.ReplicaSetList)
 	deploymentChan := make(chan *deployment.DeploymentList)
@@ -73,31 +73,31 @@ func GetWorkloadsFromChannels(channels *common.ResourceChannels,
 	userChan := make(chan *httpdbuser.UserList)
 
 	go func() {
-		rcList, err := replicationcontroller.GetReplicationControllerListFromChannels(channels)
+		rcList, err := replicationcontroller.GetReplicationControllerListFromChannels(channels, namespaces)
 		errChan <- err
 		rcChan <- rcList
 	}()
 
 	go func() {
-		rsList, err := replicaset.GetReplicaSetListFromChannels(channels)
+		rsList, err := replicaset.GetReplicaSetListFromChannels(channels, namespaces)
 		errChan <- err
 		rsChan <- rsList
 	}()
 
 	go func() {
-		deploymentList, err := deployment.GetDeploymentListFromChannels(channels)
+		deploymentList, err := deployment.GetDeploymentListFromChannels(channels, namespaces)
 		errChan <- err
 		deploymentChan <- deploymentList
 	}()
 
 	go func() {
-		podList, err := pod.GetPodListFromChannels(channels, heapsterClient)
+		podList, err := pod.GetPodListFromChannels(channels, heapsterClient, namespaces)
 		errChan <- err
 		podChan <- podList
 	}()
 
 	go func() {
-		userList, err := user.GetUserListFromChannels(channels, httpdbClient)
+		userList, err := user.GetUserListFromChannels(channels, httpdbClient, namespaces)
 		userChan <- userList
 		errChan <- err
 	}()

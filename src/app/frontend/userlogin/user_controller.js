@@ -20,17 +20,24 @@ export class UserController {
    * @param {!backendApi.Workloads} workloads
    * @ngInject
    */
-  constructor($state, $scope, $rootScope) {
-    /** @export {!backendApi.Workloads} */
+  constructor($scope, $state, $rootScope, $http, UserLoginService) {
     this.user;
     this.rootScope_ = $rootScope;
     this.state_ = $state;
+    this.http_ = $http;
     this.scope_ = $scope;
+    this.UserLoginService = UserLoginService;
   }
 
   login() {
-    // this.user.username = 'abc';
-    // this.state_.go('workloads');
-    this.message = this.user.username;
+    let username = this.user.username;
+    let password = this.user.password;
+    this.UserLoginService.setUser(username, password);
+    let that = this;
+    that.http_.post('/api/v1/login',{name: username, password: password})
+            .success(function(response) {
+                  that.state_.go('workloads');      
+                  //that.rootScope_.user = that.user;
+              });
   }
 }

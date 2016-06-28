@@ -51,19 +51,19 @@ type Pod struct {
 }
 
 // GetPodList returns a list of all Pods in the cluster.
-func GetPodList(client k8sClient.Interface, heapsterClient client.HeapsterClient) (*PodList, error) {
+func GetPodList(client k8sClient.Interface, heapsterClient client.HeapsterClient, namespaces []string) (*PodList, error) {
 	log.Printf("Getting list of all pods in the cluster")
 
 	channels := &common.ResourceChannels{
 		PodList: common.GetPodListChannel(client, 1),
 	}
 
-	return GetPodListFromChannels(channels, heapsterClient)
+	return GetPodListFromChannels(channels, heapsterClient, namespaces)
 }
 
 // GetPodList returns a list of all Pods in the cluster
 // reading required resource list once from the channels.
-func GetPodListFromChannels(channels *common.ResourceChannels, heapsterClient client.HeapsterClient) (
+func GetPodListFromChannels(channels *common.ResourceChannels, heapsterClient client.HeapsterClient, namespaces []string) (
 	*PodList, error) {
 
 	pods := <-channels.PodList.List
@@ -72,6 +72,12 @@ func GetPodListFromChannels(channels *common.ResourceChannels, heapsterClient cl
 	}
 
 	podList := CreatePodList(pods.Items, heapsterClient)
+
+	if namespaces != nil {
+		result := FilterByNamespace(namespaces, podList)
+		return &result, nil
+	}
+
 	return &podList, nil
 }
 
@@ -91,4 +97,20 @@ func CreatePodList(pods []api.Pod, heapsterClient client.HeapsterClient) PodList
 	}
 
 	return podList
+}
+
+func FilterByNamespace(namespaces []string, podList PodList) PodList {
+	res := make([]Pod, 0)
+	result := new(PodList)
+	for _, v1 := range podList.Pods {
+		for _, v2 := range namespaces {
+			if v2 == v1.ObjectMeta.Namespace {
+				res = append(res, v1)
+				break
+			}
+		}
+	}
+
+	result.Pods = res
+	return *result
 }

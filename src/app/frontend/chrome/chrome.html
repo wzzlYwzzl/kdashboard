@@ -20,6 +20,12 @@ limitations under the License.
     <a ui-sref="workloads" ui-sref-opts="{reload: true}" tabindex="-1">
       <span class="toolbarlogo">上海凯翔</span>
     </a>
+    <span ng-if="ctrl.isIconVisible()" class="loginicon">  
+    <md-button class="md-icon-button">
+      <md-icon ui-sref="userlogin">person</md-icon>
+      <md-tooltip md-direction="left">退出登录</md-tooltip>
+    </md-button>
+    </span>
     </h2>
     <div flex="auto" ui-view="toolbar"></div>
   </div>

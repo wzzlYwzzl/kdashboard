@@ -44,6 +44,11 @@ func (c HttpDBClient) CreateNS(name, namespace string) (bool, error) {
 	return false, nil
 }
 
+/**
+ * get one user's namespace from the database server
+ * @param  {string} name [the name of user]
+ * @return {[]string}   the user's namespaces
+ */
 func (c HttpDBClient) GetNS(name string) ([]string, error) {
 	ns := make([]string, 0, 10)
 	url := "http://" + c.Host + "/api/v1/user/ns/" + name

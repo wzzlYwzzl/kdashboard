@@ -46,7 +46,7 @@ type ReplicaSet struct {
 }
 
 // GetReplicaSetList returns a list of all Replica Sets in the cluster.
-func GetReplicaSetList(client client.Interface) (*ReplicaSetList, error) {
+func GetReplicaSetList(client client.Interface, namespaces []string) (*ReplicaSetList, error) {
 	log.Printf("Getting list of all replica sets in the cluster")
 
 	channels := &common.ResourceChannels{
@@ -57,12 +57,12 @@ func GetReplicaSetList(client client.Interface) (*ReplicaSetList, error) {
 		NodeList:       common.GetNodeListChannel(client, 1),
 	}
 
-	return GetReplicaSetListFromChannels(channels)
+	return GetReplicaSetListFromChannels(channels, namespaces)
 }
 
 // GetReplicaSetList returns a list of all Replica Sets in the cluster
 // reading required resource list once from the channels.
-func GetReplicaSetListFromChannels(channels *common.ResourceChannels) (
+func GetReplicaSetListFromChannels(channels *common.ResourceChannels, namespaces []string) (
 	*ReplicaSetList, error) {
 
 	replicaSets := <-channels.ReplicaSetList.List
@@ -99,8 +99,14 @@ func GetReplicaSetListFromChannels(channels *common.ResourceChannels) (
 		return nil, err
 	}
 
-	return getReplicaSetList(replicaSets.Items, services.Items, pods.Items, events.Items,
-		nodes.Items), nil
+	result := getReplicaSetList(replicaSets.Items, services.Items, pods.Items, events.Items,
+		nodes.Items)
+
+	if namespaces != nil {
+		return FilterByNamespace(namespaces, result), nil
+	}
+
+	return result, nil
 }
 
 func getReplicaSetList(replicaSets []extensions.ReplicaSet,
@@ -126,4 +132,20 @@ func getReplicaSetList(replicaSets []extensions.ReplicaSet,
 	}
 
 	return replicaSetList
+}
+
+func FilterByNamespace(namespaces []string, rs *ReplicaSetList) *ReplicaSetList {
+	res := make([]ReplicaSet, 0)
+	result := new(ReplicaSetList)
+	for _, v1 := range rs.ReplicaSets {
+		for _, v2 := range namespaces {
+			if v2 == v1.ObjectMeta.Namespace {
+				res = append(res, v1)
+				break
+			}
+		}
+	}
+
+	result.ReplicaSets = res
+	return result
 }

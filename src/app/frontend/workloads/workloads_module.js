@@ -19,6 +19,7 @@ import replicationControllerListModule from 'replicationcontrollerlist/replicati
 import replicaSetListModule from 'replicasetlist/replicasetlist_module';
 import userListModule from 'userlist/userlist_module';
 import stateConfig from './workloads_stateconfig';
+import userLoginModule from 'userlogin/user_module';
 
 /**
  * Module with a view that displays resources categorized as workloads, e.g., Replica Sets or
@@ -37,5 +38,6 @@ export default angular
           replicaSetListModule.name,
           deploymentListModule.name,
           userListModule.name,
+          userLoginModule.name,
         ])
     .config(stateConfig);

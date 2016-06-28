@@ -50,7 +50,7 @@ type ReplicationController struct {
 }
 
 // GetReplicationControllerList returns a list of all Replication Controllers in the cluster.
-func GetReplicationControllerList(client *client.Client) (*ReplicationControllerList, error) {
+func GetReplicationControllerList(client *client.Client, namespaces []string) (*ReplicationControllerList, error) {
 	log.Printf("Getting list of all replication controllers in the cluster")
 
 	channels := &common.ResourceChannels{
@@ -61,12 +61,12 @@ func GetReplicationControllerList(client *client.Client) (*ReplicationController
 		NodeList:                  common.GetNodeListChannel(client, 1),
 	}
 
-	return GetReplicationControllerListFromChannels(channels)
+	return GetReplicationControllerListFromChannels(channels, namespaces)
 }
 
 // GetReplicationControllerList returns a list of all Replication Controllers in the cluster
 // reading required resource list once from the channels.
-func GetReplicationControllerListFromChannels(channels *common.ResourceChannels) (
+func GetReplicationControllerListFromChannels(channels *common.ResourceChannels, namespaces []string) (
 	*ReplicationControllerList, error) {
 
 	replicationControllers := <-channels.ReplicationControllerList.List
@@ -96,6 +96,10 @@ func GetReplicationControllerListFromChannels(channels *common.ResourceChannels)
 
 	result := getReplicationControllerList(replicationControllers.Items, services.Items,
 		pods.Items, events.Items, nodes.Items)
+
+	if namespaces != nil {
+		return FilterByNamespace(namespaces, result), nil
+	}
 
 	return result, nil
 }
@@ -162,4 +166,20 @@ func getMatchingServices(services []api.Service,
 		}
 	}
 	return matchingServices
+}
+
+func FilterByNamespace(namespaces []string, rcs *ReplicationControllerList) *ReplicationControllerList {
+	res := make([]ReplicationController, 0)
+	result := new(ReplicationControllerList)
+	for _, v1 := range rcs.ReplicationControllers {
+		for _, v2 := range namespaces {
+			if v2 == v1.ObjectMeta.Namespace {
+				res = append(res, v1)
+				break
+			}
+		}
+	}
+
+	result.ReplicationControllers = res
+	return result
 }

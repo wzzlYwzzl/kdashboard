@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import stateConfig from './user_stateconfig';
+import  UserLoginService from './user_service';
 
 /**
  * Module with a view that displays resources categorized as workloads, e.g., Replica Sets or
@@ -25,4 +26,5 @@ export default angular
           'ngMaterial',
           'ui.router',
         ])
-    .config(stateConfig);
+    .config(stateConfig)
+    .service('UserLoginService', UserLoginService);

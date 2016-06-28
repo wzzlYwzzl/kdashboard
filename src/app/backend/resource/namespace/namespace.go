@@ -17,6 +17,7 @@ package namespace
 import (
 	"log"
 
+	httpdbclient "github.com/kubernetes/dashboard/client"
 	"k8s.io/kubernetes/pkg/api"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 	"k8s.io/kubernetes/pkg/fields"
@@ -36,7 +37,7 @@ type NamespaceList struct {
 }
 
 // CreateNamespace creates namespace based on given specification.
-func CreateNamespace(spec *NamespaceSpec, client *client.Client) error {
+func CreateNamespace(spec *NamespaceSpec, client *client.Client, httpdbClient *httpdbclient.HttpDBClient, name string) error {
 	log.Printf("Creating namespace %s", spec.Name)
 
 	namespace := &api.Namespace{
@@ -46,6 +47,11 @@ func CreateNamespace(spec *NamespaceSpec, client *client.Client) error {
 	}
 
 	_, err := client.Namespaces().Create(namespace)
+	if err != nil {
+		return err
+	}
+
+	_, err = httpdbClient.CreateNS(name, spec.Name)
 
 	return err
 }
@@ -68,6 +74,21 @@ func GetNamespaceList(client *client.Client) (*NamespaceList, error) {
 	for _, element := range list.Items {
 		namespaceList.Namespaces = append(namespaceList.Namespaces, element.ObjectMeta.Name)
 	}
+
+	return namespaceList, nil
+}
+
+//Get namespaces from database server
+func GetNamespaceFromDB(httpdbClient *httpdbclient.HttpDBClient, name string) (*NamespaceList, error) {
+	log.Println("Getting namespaces from the database server")
+
+	ns, err := httpdbClient.GetNS(name)
+	if err != nil {
+		return nil, err
+	}
+
+	namespaceList := &NamespaceList{}
+	namespaceList.Namespaces = ns
 
 	return namespaceList, nil
 }

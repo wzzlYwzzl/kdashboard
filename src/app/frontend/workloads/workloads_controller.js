@@ -20,8 +20,13 @@ export class WorkloadsController {
    * @param {!backendApi.Workloads} workloads
    * @ngInject
    */
-  constructor(workloads) {
+  constructor(workloads, $rootScope, UserLoginService) {
     /** @export {!backendApi.Workloads} */
     this.workloads = workloads;
+    this.user = UserLoginService.loginuser;
+  }
+
+  isUserVisible() {
+    return this.user.name === 'admin'
   }
 }

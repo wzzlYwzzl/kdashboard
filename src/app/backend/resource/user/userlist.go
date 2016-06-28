@@ -9,7 +9,7 @@ import (
 )
 
 //GetUserList return a list of all users in the cluster.
-func GetUserListFromChannels(channels *common.ResourceChannels, httpdbClient *client.HttpDBClient) (
+func GetUserListFromChannels(channels *common.ResourceChannels, httpdbClient *client.HttpDBClient, namespaces []string) (
 	*httpdbuser.UserList, error) {
 
 	users := <-channels.UserList.List
@@ -21,12 +21,12 @@ func GetUserListFromChannels(channels *common.ResourceChannels, httpdbClient *cl
 	return users, nil
 }
 
-func GetUserList(httpdbClient *client.HttpDBClient) (*httpdbuser.UserList, error) {
+func GetUserList(httpdbClient *client.HttpDBClient, namespaces []string) (*httpdbuser.UserList, error) {
 	log.Println("Getting list of users from the httpdb server")
 
 	channels := &common.ResourceChannels{
 		UserList: common.GetUserListChannel(httpdbClient, 1),
 	}
 
-	return GetUserListFromChannels(channels, httpdbClient)
+	return GetUserListFromChannels(channels, httpdbClient, namespaces)
 }

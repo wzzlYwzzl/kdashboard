@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<kd-content-card ng-if="$ctrl.workloads.userList.userList.length">
+<kd-content-card ng-if="$ctrl.isUserVisible()">
   <kd-title>
     <a ui-sref="users">
       用户
