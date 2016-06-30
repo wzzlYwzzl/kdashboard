@@ -1,0 +1,11 @@
+@import '../variables';
+
+.kd-adduser-whiteframe {
+  background: $content-background;
+  margin: $baseline-grid;
+  width: 800px;
+}
+
+.kd-adduser-form-title {
+  margin-top: $baseline-grid;
+}

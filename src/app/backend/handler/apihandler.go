@@ -331,6 +331,11 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 	userWs.Route(
 		userWs.DELETE("/{name}").
 			To(apiHandler.handleDeleteUser))
+	userWs.Route(
+		userWs.POST("").
+			To(apiHandler.handleCreateUser).
+			Reads(user.UserCreate{}).
+			Writes(httpdbuser.User{}))
 	wsContainer.Add(userWs)
 
 	return wsContainer
@@ -838,6 +843,42 @@ func (apiHandler *ApiHandler) handleUserLogin(request *restful.Request, response
 	sess.Set("allinfo", *userinfo)
 
 	response.WriteHeader(http.StatusAccepted)
+}
+
+//handle delete user
+func (apiHandler *ApiHandler) handleDeleteUser(request *restful.Request, response *restful.Response) {
+	username := request.PathParameter("name")
+	err := user.DeleteUser(apiHandler.httpdbClient, username)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	response.WriteHeader(http.StatusOK)
+}
+
+func (apiHandler *ApiHandler) handleCreateUser(request *restful.Request, response *restful.Response) {
+	userCreate := new(user.UserCreate)
+	err := request.ReadEntity(userCreate)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	namespaceSpec := new(NamespaceSpec)
+	namespaceSpec.Name = userCreate.Name
+	if err := CreateNamespace(namespaceSpec, apiHandler.client, apiHandler.httpdbClient, ""); err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	result, err := user.CreateUser(apiHandler.httpdbClient, userCreate)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	response.WriteHeaderAndEntity(http.StatusCreated, result)
 }
 
 //handle user list

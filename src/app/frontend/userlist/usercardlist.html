@@ -21,7 +21,9 @@
             </div>
         </kd-resource-card-column>
         <kd-resource-card-column>
-            {{user.namespaces}}
+          <div ng-repeat="namespace in user.namespaces" >
+            {{namespace}}
+          </div>
         </kd-resource-card-column>  
         <kd-resource-card-column>
              {{user.cpus}}

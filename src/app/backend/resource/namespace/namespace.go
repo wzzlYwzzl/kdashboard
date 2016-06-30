@@ -51,7 +51,9 @@ func CreateNamespace(spec *NamespaceSpec, client *client.Client, httpdbClient *h
 		return err
 	}
 
-	_, err = httpdbClient.CreateNS(name, spec.Name)
+	if name != "" {
+		_, err = httpdbClient.CreateNS(name, spec.Name)
+	}
 
 	return err
 }

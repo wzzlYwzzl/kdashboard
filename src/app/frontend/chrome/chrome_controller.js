@@ -45,13 +45,11 @@ export default class ChromeController {
         this.state_.current.url !== '/userlogin';
   }
 
-/**
+  /**
    * @return {boolean}
    * @export
    */
-  isIconVisible() {
-    return this.state_.current.url !== '/userlogin';
-  }
+  isIconVisible() { return this.state_.current.url !== '/userlogin'; }
 
   /**
    * @param {!angular.Scope} scope

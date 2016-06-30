@@ -465,6 +465,16 @@ backendApi.User;
 
 /**
  * @typedef {{
+ *   name: string,
+ *   password: string,
+ *   cpus: number,
+ *   memory: number,
+ * }}
+ */
+backendApi.UserCreate;
+
+/**
+ * @typedef {{
  *   userList: !Array<!backendApi.User>
  * }}
  */

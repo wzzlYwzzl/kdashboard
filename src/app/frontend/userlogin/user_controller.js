@@ -34,10 +34,10 @@ export class UserController {
     let password = this.user.password;
     this.UserLoginService.setUser(username, password);
     let that = this;
-    that.http_.post('/api/v1/login',{name: username, password: password})
-            .success(function(response) {
-                  that.state_.go('workloads');      
-                  //that.rootScope_.user = that.user;
-              });
+    that.http_.post('/api/v1/login', {name: username, password: password})
+        .success(function() {
+          that.state_.go('workloads');
+          // that.rootScope_.user = that.user;
+        });
   }
 }

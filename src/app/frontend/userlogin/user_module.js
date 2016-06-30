@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import stateConfig from './user_stateconfig';
-import  UserLoginService from './user_service';
+import UserLoginService from './user_service';
 
 /**
  * Module with a view that displays resources categorized as workloads, e.g., Replica Sets or
@@ -27,4 +27,27 @@ export default angular
           'ui.router',
         ])
     .config(stateConfig)
+    .run(userloginConfig)
     .service('UserLoginService', UserLoginService);
+
+
+ 
+/**
+ * Configures event catchers for the state change.
+ *
+ * @param {!angular.Scope} $rootScope
+ * @param {!ui.router.$state} $state
+ * @param {!angular.$templateCache} $templateCache
+ * @param {!angular.$window} $window
+ * @ngInject
+ */
+function userloginConfig($rootScope, $state, $templateCache, $window, UserLoginService) {
+    $rootScope.$on('$stateChangeStart', 
+        function(event, toState, toParams, fromState, fromParams) {
+            if (fromState.name !== 'userlogin' && toState.name !== 'userlogin' && UserLoginService.loginuser.name === undefined) {
+                // $state.go('userlogin');
+                event.preventDefault();
+                $state.go('userlogin');
+            }
+        });
+}

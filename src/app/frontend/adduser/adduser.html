@@ -1,0 +1,43 @@
+<div layout="column" layout-padding  layout-align="center center" flex="auto">
+    <md-whiteframe class="md-whiteframe-1dp kd-adduser-whiteframe" flex="auto">
+        <h3 class="md-headline kd-adduser-form-title">添加用户</h3>
+        <form  name="ctrl.adduserForm" ng-submit="ctrl.addUser()"  novalidate>
+           <md-input-container class="md-block" >
+                 <label>用户名</label>
+                <input md-maxlength="{{ctrl.nameMaxLength}}" required name="name" ng-model="ctrl.username">
+                <div ng-messages="ctrl.adduserForm.name.$error">
+                    <div ng-message="required">必须填写</div>
+                    <div ng-message="md-maxlength">长度必须小于20个字符</div>
+                </div>
+           </md-input-container>
+           <md-input-container class="md-block" >
+                 <label>密码</label>
+                <input type="password" minlength="{{ctrl.passwordMinLength}}" required name="password" ng-model="ctrl.password">
+                <div ng-messages="ctrl.adduserForm.password.$error">
+                    <div ng-message="required">必须填写</div>
+                    <div ng-message="minlength">密码长度必须大于5个字符</div>
+                </div>
+           </md-input-container>
+           <md-input-container class="md-block" >
+                 <label>CPU配额</label>
+                <input type="number" required name="cpus" ng-model="ctrl.cpus" min="0" max="99">
+                <div ng-messages="ctrl.adduserForm.cpus.$error">
+                    <div ng-message="required">必须填写</div>
+                    <div ng-message-exp="['min', 'max']">大小必须为0~99</div>
+                </div>
+           </md-input-container>
+            <md-input-container class="md-block" >
+                 <label>内存配额(单位MB)</label>
+                <input type="number" required name="memory" ng-model="ctrl.memory" min="100" max="10000">
+                <div ng-messages="ctrl.adduserForm.memory.$error">
+                    <div ng-message="required">必须填写</div>
+                    <div ng-message-exp="['min', 'max']">大小必须为100~10000</div>
+                </div>
+           </md-input-container>
+           <md-button class="md-raised md-primary" type="submit">
+                创建
+           </md-button>
+           <md-button class="md-raised" ng-click="ctrl.cancel()">取消</md-button>
+        </form>
+    </md-whiteframe>
+</div>

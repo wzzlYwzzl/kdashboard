@@ -44,7 +44,7 @@ export default function stateConfig($stateProvider) {
  * @ngInject
  */
 export function resolveUserList($resource) {
-   /** @type {!angular.Resource<!backendApi.UserList>} */
+  /** @type {!angular.Resource<!backendApi.UserList>} */
   let resource = $resource('api/v1/users');
   return resource.get().$promise;
 }

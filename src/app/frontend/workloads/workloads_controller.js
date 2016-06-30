@@ -23,10 +23,8 @@ export class WorkloadsController {
   constructor(workloads, $rootScope, UserLoginService) {
     /** @export {!backendApi.Workloads} */
     this.workloads = workloads;
-    this.user = UserLoginService.loginuser;
+    this.UserLoginService = UserLoginService;
   }
 
-  isUserVisible() {
-    return this.user.name === 'admin'
-  }
+  isUserVisible() { return this.UserLoginService.loginuser.name === 'admin'; }
 }

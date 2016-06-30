@@ -10,6 +10,13 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type UserCreate struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Cpus     int    `json:"cpus"`
+	Memory   int    `json:"memory"`
+}
+
 //Judge user whether exist, if exist, return all the info about the user.
 func JudgeUser(httpdbClient *client.HttpDBClient, user *User) (*httpdbuser.User, error) {
 	b, err := httpdbClient.JudgeName(user.Name, user.Password)
@@ -26,4 +33,25 @@ func JudgeUser(httpdbClient *client.HttpDBClient, user *User) (*httpdbuser.User,
 	}
 
 	return userinfo, nil
+}
+
+//delete user
+func DeleteUser(httpdbClient *client.HttpDBClient, username string) error {
+	_, err := httpdbClient.DeleteUser(username)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func CreateUser(httpdbClient *client.HttpDBClient, userCreate *UserCreate) (*httpdbuser.User, error) {
+	httpdbUser := new(httpdbuser.User)
+	httpdbUser.Name = userCreate.Name
+	httpdbUser.Password = userCreate.Password
+	httpdbUser.Cpus = userCreate.Cpus
+	httpdbUser.Memory = userCreate.Memory
+
+	_, err := httpdbClient.CreateUser(httpdbUser)
+	return httpdbUser, err
 }
