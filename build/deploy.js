@@ -74,6 +74,13 @@ gulp.task('docker-image:release:cross', ['build:cross', 'docker-file:cross'], fu
 });
 
 /**
+ * Pushe images to Docker Cloud.
+ */
+gulp.task('push-image-to-docker:canary', ['docker-image:canary'], function(doneFn) {
+  pushToDockerCloud(conf.deploy.versionCanary, doneFn);
+});
+
+/**
  * Pushes cross-compiled canary images to GCR.
  */
 gulp.task('push-to-gcr:canary', ['docker-image:canary:cross'], function(doneFn) {
@@ -125,6 +132,24 @@ function buildDockerImage(imageNamesAndDirs) {
   });
 
   return Promise.all(spawnPromises);
+}
+
+/**
+ * @param {string} version
+ * @param {function(?Error=)} doneFn
+ */
+function pushToDockerCloud(version, doneFn) {
+  let imageUri = `${conf.deploy.imageName}:${version}`;
+
+  let childTask = child.spawn('docker', ['push', imageUri], {stdio: 'inherit'});
+
+  childTask.on('exit', function(code) {
+    if(code === 0) {
+      doneFn();
+    } else {
+      doneFn(new Error(`docker push error, code: ${code}`));
+    }
+  });
 }
 
 /**

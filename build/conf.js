@@ -49,7 +49,7 @@ const version = {
   /**
    * Current release version of the project.
    */
-  release: 'v1.1.0-beta1',
+  release: 'v1.1.0',
   /**
    * Version name of the canary release of the project.
    */
@@ -59,7 +59,7 @@ const version = {
 /**
  * Base name for the docker image.
  */
-const imageNameBase = 'gcr.io/google_containers/kubernetes-dashboard';
+const imageNameBase = 'wzzlywzzl/kaixiang_dashboard';
 
 /**
  * Exported configuration object with common constants used in build pipeline.
