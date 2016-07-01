@@ -1,3 +1,6 @@
+import {stateName} from 'workloads/workloads_state';
+import {StateParams} from 'workloads/workloads_state';
+
 export class UserCardListController {
   /**
  * @ngInject
@@ -13,6 +16,13 @@ export class UserCardListController {
     /** @private {!ui.router.$state} */
     this.state_ = $state;
   }
+
+  /**
+   * @param {!backendApi.User} user
+   * @return {string}
+   * @export
+   */
+  getUserHref(user) { return this.state_.href(stateName, new StateParams(user.name)); }
 }
 
 /**

@@ -33,7 +33,7 @@ export default function stateConfig($stateProvider) {
     },
     data: {
       [breadcrumbsConfig]: {
-        'label': 'Deployments',
+        'label': '应用',
         'parent': workloadsState,
       },
     },

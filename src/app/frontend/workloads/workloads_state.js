@@ -19,3 +19,19 @@ export const stateName = 'workloads';
 /** Absolute URL of the state. */
 export const stateUrl = '/workloads';
 // export const stateUrl = '/user';
+
+/**
+ * Parameters for this state.
+ *
+ * All properties are @exported and in sync with URL param names.
+ * @final
+ */
+export class StateParams {
+  /**
+   * @param {string} name
+   */
+  constructor(name) {
+    /** @export {string} user name. */
+    this.name = name;
+  }
+}

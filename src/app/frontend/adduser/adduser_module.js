@@ -9,4 +9,3 @@ export default angular
           'ui.router',
         ])
     .config(stateConfig);
- 

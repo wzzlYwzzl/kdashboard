@@ -17,7 +17,10 @@
     <kd-resource-card-columns>
         <kd-resource-card-column>
             <div>
-                   {{user.name}}     
+              <a ng-href="{{$ctrl.getUserHref(user)}}"  class="kd-middle-ellipsised-link">
+                 <kd-middle-ellipsis display-string="{{user.name}} " >
+                 </kd-middle-ellipsis> 
+              </a>
             </div>
         </kd-resource-card-column>
         <kd-resource-card-column>

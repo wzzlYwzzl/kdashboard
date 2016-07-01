@@ -30,24 +30,28 @@ export default angular
     .run(userloginConfig)
     .service('UserLoginService', UserLoginService);
 
-
- 
 /**
  * Configures event catchers for the state change.
  *
  * @param {!angular.Scope} $rootScope
  * @param {!ui.router.$state} $state
- * @param {!angular.$templateCache} $templateCache
  * @param {!angular.$window} $window
  * @ngInject
  */
-function userloginConfig($rootScope, $state, $templateCache, $window, UserLoginService) {
-    $rootScope.$on('$stateChangeStart', 
-        function(event, toState, toParams, fromState, fromParams) {
-            if (fromState.name !== 'userlogin' && toState.name !== 'userlogin' && UserLoginService.loginuser.name === undefined) {
-                // $state.go('userlogin');
-                event.preventDefault();
-                $state.go('userlogin');
-            }
-        });
+function userloginConfig($rootScope, $state, $http, $window, UserLoginService) {
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+    if (fromState.name !== 'userlogin' && toState.name !== 'userlogin' &&
+      UserLoginService.loginuser.name === undefined) {
+      // $state.go('userlogin');
+      event.preventDefault();
+      $state.go('userlogin');
+    } 
+    if (toState.name === 'deploy') {
+      $http.get('/api/v1/users/allinfo').success(function(response) {
+        UserLoginService.loginuser.cpususe = response.cpususe;
+        UserLoginService.loginuser.memoryuse = response.memoryuse;
+        //$state.reload('deploy');
+      });
+    }
+  });
 }

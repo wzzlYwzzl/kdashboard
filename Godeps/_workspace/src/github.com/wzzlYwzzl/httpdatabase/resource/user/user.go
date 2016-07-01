@@ -116,7 +116,7 @@ func (user *User) CreateUser(dbconf *sqlop.MysqlCon) error {
 	userinfo.Mem = user.Memory
 	resource.Name = user.Name
 	userns.Name = user.Name
-	userns.Namespace = user.Name + "_default"
+	userns.Namespace = user.Name + "-default"
 
 	db, err := userinfo.Connect(dbconf)
 	if err != nil {

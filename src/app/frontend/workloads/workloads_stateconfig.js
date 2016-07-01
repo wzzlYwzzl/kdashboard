@@ -17,6 +17,7 @@ import {stateName} from './workloads_state';
 import {stateUrl} from './workloads_state';
 import {WorkloadsController} from './workloads_controller';
 import {WorkloadsActionBarController} from './workloadsactionbar_controller';
+import {stateName as users} from 'userlist/userlist_state';
 
 /**
  * @param {!ui.router.$stateProvider} $stateProvider
@@ -24,13 +25,14 @@ import {WorkloadsActionBarController} from './workloadsactionbar_controller';
  */
 export default function stateConfig($stateProvider) {
   $stateProvider.state(stateName, {
-    url: stateUrl,
+    url: `${stateUrl}/:name`,
     resolve: {
       'workloads': resolveWorkloads,
     },
     data: {
       'kdBreadcrumbs': {
         'label': '集群概览',
+         'parent': users,
       },
     },
     views: {
@@ -53,8 +55,8 @@ export default function stateConfig($stateProvider) {
  * @return {!angular.$q.Promise}
  * @ngInject
  */
-export function resolveWorkloads($resource) {
+export function resolveWorkloads($resource, $stateParams) {
   /** @type {!angular.Resource<!backendApi.Workloads>} */
-  let resource = $resource('api/v1/workloads');
+  let resource = $resource(`api/v1/workloads/${$stateParams.name}`);
   return resource.get().$promise;
 }

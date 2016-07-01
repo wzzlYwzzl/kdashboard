@@ -170,7 +170,7 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 		Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON)
 	workloadsWs.Route(
-		workloadsWs.GET("").
+		workloadsWs.GET("/{name}").
 			To(apiHandler.handleGetWorkloads).
 			Writes(workload.Workloads{}))
 	wsContainer.Add(workloadsWs)
@@ -317,7 +317,8 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 	loginWs.Route(
 		loginWs.POST("").
 			To(apiHandler.handleUserLogin).
-			Reads(user.User{}))
+			Reads(user.User{}).
+			Writes(httpdbuser.User{}))
 	wsContainer.Add(loginWs)
 
 	userWs := new(restful.WebService)
@@ -328,6 +329,10 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 		userWs.GET("").
 			To(apiHandler.handleGetUsers).
 			Writes(httpdbuser.UserList{}))
+	userWs.Route(
+		userWs.GET("/allinfo").
+			To(apiHandler.handleGetUserInfo).
+			Writes(httpdbuser.User{}))
 	userWs.Route(
 		userWs.DELETE("/{name}").
 			To(apiHandler.handleDeleteUser))
@@ -367,11 +372,37 @@ func (apiHandler *ApiHandler) handleGetServiceDetail(request *restful.Request, r
 
 // Handles deploy API call.
 func (apiHandler *ApiHandler) handleDeploy(request *restful.Request, response *restful.Response) {
+	//get userinfo from session
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	userinfo := allinfo.(httpdbuser.User)
+
 	appDeploymentSpec := new(AppDeploymentSpec)
 	if err := request.ReadEntity(appDeploymentSpec); err != nil {
 		handleInternalError(response, err)
 		return
 	}
+
+	log.Println("the old value of userinfo: ", userinfo)
+	log.Println(appDeploymentSpec)
+	//change the session value
+	userinfo.CpusUse = userinfo.CpusUse + int(appDeploymentSpec.CpuRequirement.Value())*appDeploymentSpec.Replicas
+	userinfo.MemoryUse = userinfo.MemoryUse + int(appDeploymentSpec.MemoryRequirement.Value()/1048576)*appDeploymentSpec.Replicas
+	sess.Set("allinfo", userinfo)
+
+	log.Println("the new value of userinfo: ", userinfo)
+
+	err := user.UpdateResource(apiHandler.httpdbClient, &userinfo)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
 	if err := DeployApp(appDeploymentSpec, apiHandler.client); err != nil {
 		handleInternalError(response, err)
 		return
@@ -473,8 +504,11 @@ func (apiHandler *ApiHandler) handleGetReplicationControllerList(
 func (apiHandler *ApiHandler) handleGetWorkloads(
 	request *restful.Request, response *restful.Response) {
 
+	username := request.PathParameter("name")
+
 	var namespaces []string
 
+	//get login user information from the session
 	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
 	allinfo := sess.Get("allinfo")
 
@@ -483,12 +517,19 @@ func (apiHandler *ApiHandler) handleGetWorkloads(
 		response.WriteHeaderAndEntity(http.StatusCreated, nil)
 		return
 	}
-	userinfo := allinfo.(httpdbuser.User)
+	loginuserinfo := allinfo.(httpdbuser.User)
 
-	if userinfo.Name == "admin" {
-		namespaces = nil
-	} else {
+	//get namespaces from the dbserver
+	userinfo, err := apiHandler.httpdbClient.GetAllInfo(username)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	if loginuserinfo.Name == "admin" {
 		namespaces = userinfo.Namespaces
+	} else {
+		namespaces = loginuserinfo.Namespaces
 	}
 
 	//namespaces = userinfo.Namespaces
@@ -842,13 +883,40 @@ func (apiHandler *ApiHandler) handleUserLogin(request *restful.Request, response
 
 	sess.Set("allinfo", *userinfo)
 
-	response.WriteHeader(http.StatusAccepted)
+	log.Println("handleUserLogin, userinfo ", userinfo)
+	response.WriteHeaderAndEntity(http.StatusAccepted, userinfo)
+}
+
+//handle get the login user's info
+func (apiHandler *ApiHandler) handleGetUserInfo(request *restful.Request, response *restful.Response) {
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	userinfo := allinfo.(httpdbuser.User)
+
+	response.WriteHeaderAndEntity(http.StatusOK, userinfo)
 }
 
 //handle delete user
 func (apiHandler *ApiHandler) handleDeleteUser(request *restful.Request, response *restful.Response) {
 	username := request.PathParameter("name")
-	err := user.DeleteUser(apiHandler.httpdbClient, username)
+
+	userinfo, err := apiHandler.httpdbClient.GetAllInfo(username)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+	err = DeleteNamespaces(userinfo.Namespaces, apiHandler.client)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	err = user.DeleteUser(apiHandler.httpdbClient, username)
 	if err != nil {
 		handleInternalError(response, err)
 		return
@@ -866,8 +934,9 @@ func (apiHandler *ApiHandler) handleCreateUser(request *restful.Request, respons
 	}
 
 	namespaceSpec := new(NamespaceSpec)
-	namespaceSpec.Name = userCreate.Name
+	namespaceSpec.Name = userCreate.Name + "-default"
 	if err := CreateNamespace(namespaceSpec, apiHandler.client, apiHandler.httpdbClient, ""); err != nil {
+		log.Println("CreateNamespace error")
 		handleInternalError(response, err)
 		return
 	}

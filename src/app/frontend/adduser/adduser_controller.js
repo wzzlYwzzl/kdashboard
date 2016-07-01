@@ -49,11 +49,9 @@ export default class AddUserController {
     let resource = this.resource_('api/v1/users');
 
     resource.save(userCreate, () => {
-        this.state_.reload(userlist);
-        this.state_.go(userlist);
+      this.state_.reload(userlist);
+      this.state_.go(userlist);
     });
-    
-     
   }
 
   cancel() { this.state_.go(userlist); }

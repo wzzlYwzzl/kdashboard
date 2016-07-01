@@ -59,16 +59,16 @@ limitations under the License.
 
 <kd-help-section>
   <md-input-container class="md-block">
-    <label>任务数量</label>
+    <label>任务副本数量</label>
     <input ng-model="ctrl.replicas" type="number" required min="1" name="replicas"
            kd-validate="integer" kd-warn-threshold="100" kd-warn-threshold-bind="showWarning">
     <ng-messages for="ctrl.form.replicas.$error" role="alert" multiple>
-      <ng-message when="required">任务数量必须填写</ng-message>
-      <ng-message when="number, kdValidInteger">任务数量必须为正整数</ng-message>
-      <ng-message when="min">任务数量必须为正整数</ng-message>
+      <ng-message when="required">任务副本数量必须填写</ng-message>
+      <ng-message when="number, kdValidInteger">任务副本数量必须为正整数</ng-message>
+      <ng-message when="min">任务副本数量必须为正整数</ng-message>
     </ng-messages>
     <span class="kd-warn-threshold" ng-show="showWarning">
-      任务数量过大会影响性能
+      任务副本数量过大会影响性能
     </span>
   </md-input-container>
 </kd-help-section>
@@ -145,20 +145,24 @@ limitations under the License.
   <kd-help-section>
     <div layout="row">
       <md-input-container flex="auto" >
-        <label>CPU内核数</label>
-        <input ng-model="ctrl.cpuRequirement" type="number" name="cpuRequirement" min="0">
+        <label>CPU内核数(剩余{{ctrl.maxCpus}}个可用)</label>
+        <input ng-model="ctrl.cpuRequirement" type="number" name="cpuRequirement" min="0" max="ctrl.maxCpus" required>
         <ng-messages for="ctrl.form.cpuRequirement.$error" role="alert" multiple>
           <ng-message when="number">CPU内核数必须是一个有效的数字</ng-message>
           <ng-message when="min">CPU内核数必须是一个正整数</ng-message>
+          <ng-message when="max">CPU数量必须小于所剩配额</ng-message>
+          <ng-message when="required">必须填写</ng-message>
         </ng-messages>
       </md-input-container>
       <div flex="5"></div>
       <md-input-container flex="auto" >
-        <label>任务分配的内存(单位MB)</label>
-        <input ng-model="ctrl.memoryRequirement" type="number" name="memoryRequirement" min="0">
+        <label>任务分配的内存(单位MB, 剩余{{ctrl.maxMemorys}}MB可用)</label>
+        <input ng-model="ctrl.memoryRequirement" type="number" name="memoryRequirement" min="0" max="ctrl.maxMemeorys" required>
         <ng-messages for="ctrl.form.memoryRequirement.$error" role="alert" multiple>
           <ng-message when="number">内存必须是一个有效的数字</ng-message>
           <ng-message when="min">内存必须是正数</ng-message>
+          <ng-message when="max">内存必须小于剩余配额</ng-message>
+           <ng-message when="required">必须填写</ng-message>
         </ng-messages>
       </md-input-container>
     </div>

@@ -38,14 +38,14 @@ limitations under the License.
   <kd-info-card-section name="Status">
     <kd-info-card-entry title="Pods">
       <div ng-if="!$ctrl.areDesiredPodsRunning()">
-        {{::$ctrl.replicaSet.podInfo.current}} 已经被创建,
-        {{::$ctrl.replicaSet.podInfo.desired}} 希望被创建
+        {{::$ctrl.replicaSet.podInfo.current}} 个已经被创建,
+        {{::$ctrl.replicaSet.podInfo.desired}} 个希望被创建
       </div>
       <div ng-if="$ctrl.areDesiredPodsRunning()">
-        {{::$ctrl.replicaSet.podInfo.running}} 正在运行
+        {{::$ctrl.replicaSet.podInfo.running}} 个正在运行
       </div>
     </kd-info-card-entry>
-    <kd-info-card-entry title="Pods status" ng-if="!$ctrl.areDesiredPodsRunning()">
+    <kd-info-card-entry title="任务状态" ng-if="!$ctrl.areDesiredPodsRunning()">
       <div ng-if="!$ctrl.areDesiredPodsRunning()">
         <div ng-if="::$ctrl.replicaSet.podInfo.pending" class="kd-comma-separated-item">
           {{::$ctrl.replicaSet.podInfo.pending}} 处于等待状态<!-- Collapse whitespace

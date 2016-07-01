@@ -11,6 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import {stateName as users} from 'userlist/userlist_state';
+import {stateName as workloads} from 'workloads/workloads_state';
 
 /**
  * @final
@@ -34,10 +36,18 @@ export class UserController {
     let password = this.user.password;
     this.UserLoginService.setUser(username, password);
     let that = this;
-    that.http_.post('/api/v1/login', {name: username, password: password})
-        .success(function() {
-          that.state_.go('workloads');
-          // that.rootScope_.user = that.user;
-        });
+    that.http_.post('/api/v1/login', {name: username, password: password}).success(function(response) {
+       that.UserLoginService.loginuser.cpus = response.cpus;
+       that.UserLoginService.loginuser.memory = response.memory;
+       that.UserLoginService.loginuser.cpususe = response.cpususe;
+       that.UserLoginService.loginuser.memoryuse = response.memoryuse;
+
+      if (that.UserLoginService.loginuser.name === 'admin') {
+        that.state_.go(users);
+      } else {
+        that.state_.go(workloads, {name: that.UserLoginService.loginuser.name});
+      }
+      // that.rootScope_.user = that.user;
+    });
   }
 }

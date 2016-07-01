@@ -18,12 +18,12 @@
  * @enum {!Array<string>}
  */
 const Units = {
-  SECOND: ['a second', 'seconds'],
-  MINUTE: ['a minute', 'minutes'],
-  HOUR: ['an hour', 'hours'],
-  DAY: ['a day', 'days'],
-  MONTH: ['a month', 'months'],
-  YEAR: ['a year', 'years'],
+  SECOND: ['1秒', '秒'],
+  MINUTE: ['1分钟', '分钟'],
+  HOUR: ['1小时', '小时'],
+  DAY: ['1天', '天'],
+  MONTH: ['1月', '月'],
+  YEAR: ['1年', '年'],
 };
 
 /**
@@ -47,8 +47,8 @@ const UnitConversions = {
  * @enum {string}
  */
 const TimeConstants = {
-  NOT_YET: `didn't happen yet`,
-  NOW: `just now`,
+  NOT_YET: `还没有开始`,
+  NOW: `刚刚`,
 };
 
 /**

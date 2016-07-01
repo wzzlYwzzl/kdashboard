@@ -58,6 +58,20 @@ func CreateNamespace(spec *NamespaceSpec, client *client.Client, httpdbClient *h
 	return err
 }
 
+//DeleteNamespace based on given specification
+func DeleteNamespaces(namespaces []string, client *client.Client) error {
+	log.Println("Delete namespace ", namespaces)
+
+	for _, v := range namespaces {
+		err := client.Namespaces().Delete(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // GetNamespaceList returns a list of all namespaces in the cluster.
 func GetNamespaceList(client *client.Client) (*NamespaceList, error) {
 	log.Printf("Getting namespace list")

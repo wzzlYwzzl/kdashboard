@@ -55,3 +55,8 @@ func CreateUser(httpdbClient *client.HttpDBClient, userCreate *UserCreate) (*htt
 	_, err := httpdbClient.CreateUser(httpdbUser)
 	return httpdbUser, err
 }
+
+func UpdateResource(httpdbClient *client.HttpDBClient, userinfo *httpdbuser.User) error {
+	_, err := httpdbClient.UpdateResource(userinfo)
+	return err
+}

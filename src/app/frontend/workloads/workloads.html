@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<kd-content-card ng-if="$ctrl.isUserVisible()">
+<!-- <kd-content-card ng-if="$ctrl.isUserVisible()">
   <kd-title>
     <a ui-sref="users">
       用户
@@ -24,11 +24,11 @@ limitations under the License.
     </kd-user-card-list> 
   </kd-content>
 </kd-content-card>
-
+ -->
 <kd-content-card ng-if=$ctrl.workloads.deploymentList.deployments.length>
   <kd-title>
     <a ui-sref="deployments">
-      部署
+      应用
     </a>
   </kd-title>
   <kd-content>

@@ -37,13 +37,20 @@ export default class DeployFromSettingsController {
    * @param {!md.$dialog} $mdDialog
    * @ngInject
    */
-  constructor($log, $state, $resource, $q, $mdDialog) {
+  constructor($log, $state, $resource, $q, $mdDialog, UserLoginService) {
     /**
      * It initializes the scope output parameter
      *
      * @export {!DeployFromSettingsController}
      */
     this.detail = this;
+
+    /** @export  */
+    this.UserLoginService = UserLoginService;
+
+    this.maxCpus = UserLoginService.loginuser.cpus - UserLoginService.loginuser.cpususe;
+
+    this.maxMemorys = UserLoginService.loginuser.memory - UserLoginService.loginuser.memoryuse;
 
     /**
      * Initialized from the scope.
