@@ -27,10 +27,9 @@ import conf from './conf';
  * Creates index file in the given directory with dependencies injected from that directory.
  *
  * @param {string} indexPath
- * @param {boolean} dev - development or production build
  * @return {!stream.Stream}
  */
-function createIndexFile(indexPath, dev) {
+function createIndexFile(indexPath) {
   let injectStyles = gulp.src(path.join(indexPath, '**/*.css'), {read: false});
 
   let injectScripts = gulp.src(path.join(indexPath, '**/*.js'), {read: false});
@@ -39,7 +38,6 @@ function createIndexFile(indexPath, dev) {
     // Make the dependencies relative to the deps directory.
     ignorePath: [path.relative(conf.paths.base, indexPath)],
     addRootSlash: false,
-    removeTags: true,
     quiet: true,
   };
 
@@ -48,27 +46,22 @@ function createIndexFile(indexPath, dev) {
     ignorePath: path.relative(conf.paths.frontendSrc, conf.paths.base),
   };
 
-  if (dev) {
-    wiredepOptions.devDependencies = true;
-  }
-
   return gulp.src(path.join(conf.paths.frontendSrc, 'index.html'))
       .pipe(gulpInject(injectStyles, injectOptions))
       .pipe(gulpInject(injectScripts, injectOptions))
       .pipe(wiredep.stream(wiredepOptions))
-      .pipe(gulp.dest(indexPath));
+      .pipe(gulp.dest(indexPath))
+      .pipe(browserSync.stream());
 }
 
 /**
  * Creates frontend application index file with development dependencies injected.
  */
-gulp.task('index', ['scripts', 'styles'], function() {
-  return createIndexFile(conf.paths.serve, true).pipe(browserSync.stream());
-});
+gulp.task('index', ['scripts', 'styles'], function() { return createIndexFile(conf.paths.serve); });
 
 /**
  * Creates frontend application index file with production dependencies injected.
  */
 gulp.task('index:prod', ['scripts:prod', 'styles:prod'], function() {
-  return createIndexFile(conf.paths.prodTmp, false);
+  return createIndexFile(conf.paths.prodTmp);
 });

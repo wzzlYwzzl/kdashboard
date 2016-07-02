@@ -19,15 +19,14 @@ import {stateName as workloads} from 'workloads/workloads_state';
  */
 export class UserController {
   /**
-   * @param {!backendApi.Workloads} workloads
    * @ngInject
    */
-  constructor($scope, $state, $rootScope, $http, UserLoginService) {
-    this.user;
-    this.rootScope_ = $rootScope;
+  constructor($state, $http, UserLoginService) {
+    this.user = {};
+    this.user.username = '';
+    this.user.password = '';
     this.state_ = $state;
     this.http_ = $http;
-    this.scope_ = $scope;
     this.UserLoginService = UserLoginService;
   }
 

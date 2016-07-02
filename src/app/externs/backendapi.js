@@ -112,7 +112,7 @@ backendApi.ReplicationControllerList;
  * @typedef {{
  *   replicationControllers: !backendApi.ReplicationControllerList,
  *   replicaSets: !backendApi.ReplicaSetList,
- *   pods: !backendApi.PodList
+ *   pods: !backendApi.PodList,
  *   userList: !backendApi.UserList
  * }}
  */
@@ -454,7 +454,7 @@ backendApi.SecretsList;
  * @typedef {{
  *   name: string,
  *   password: string,
- *   namespaces: !Array<string>
+ *   namespaces: !Array<string>,
  *   cpus: number,
  *   memory: number,
  *   cpususe: number,
@@ -468,7 +468,7 @@ backendApi.User;
  *   name: string,
  *   password: string,
  *   cpus: number,
- *   memory: number,
+ *   memory: number
  * }}
  */
 backendApi.UserCreate;

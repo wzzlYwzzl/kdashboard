@@ -1,8 +1,6 @@
 export default class UserLoginService {
-  constructor($http, $rootScope) {
-    this.http_ = $http;
-    this.rootScope_ = $rootScope;
-    this.loginuser;
+  constructor() {
+    this.loginuser = {};
   }
 
   setUser(username, password) {

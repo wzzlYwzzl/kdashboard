@@ -71,7 +71,7 @@ func main() {
 
 	// Run a HTTP server that serves static public files from './public' and handles API calls.
 	// TODO(bryk): Disable directory listing.
-	http.Handle("/", http.FileServer(http.Dir("./public")))
+	http.Handle("/", http.FileServer(http.Dir("./public/")))
 	http.Handle("/api/", CreateHttpApiHandler(apiserverClient, heapsterRESTClient, config, httpdbClient, globalSessions))
 	// TODO(maciaszczykm): Move to /appConfig.json as it was discussed in #640.
 	http.Handle("/api/appConfig.json", AppHandler(ConfigHandler))
