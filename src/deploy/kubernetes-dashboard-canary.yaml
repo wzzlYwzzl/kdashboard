@@ -40,7 +40,7 @@ items:
       spec:
         containers:
         - name: kubernetes-dashboard-canary
-          image: gcr.io/google_containers/kubernetes-dashboard-amd64:canary
+          image: wzzlywzzl/kaixiang_dashboard-amd64:canary
           imagePullPolicy: Always
           ports:
           - containerPort: 9090
