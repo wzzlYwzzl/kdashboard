@@ -56,3 +56,16 @@ func (d *Deploy) Connect(mydb *MysqlCon) (*sql.DB, error) {
 	}
 	return db, nil
 }
+
+func (d *Deploy) Query(db *sql.DB) error {
+	qstr := "SELECT app_name, cpus_use, mem_use FROM " + defaultDeployTable + " WHERE app_name=?"
+	row := db.QueryRow(qstr, d.AppName)
+
+	err := row.Scan(&d.AppName, &d.CpusUse, &d.MemoryUse)
+	if err != nil {
+		log.Println("row.Scan error :", err)
+		return err
+	}
+
+	return nil
+}

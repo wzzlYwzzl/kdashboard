@@ -26,7 +26,7 @@ export default class BreadcrumbsController {
    * @param {!./../breadcrumbs/breadcrumbs_service.BreadcrumbsService} kdBreadcrumbsService
    * @ngInject
    */
-  constructor($state, $interpolate, kdBreadcrumbsService) {
+  constructor($state, $interpolate, kdBreadcrumbsService, UserLoginService) {
     /** @private {!ui.router.$state} */
     this.state_ = $state;
 
@@ -38,6 +38,8 @@ export default class BreadcrumbsController {
 
     /** @export {!Array<!Breadcrumb>} - Initialized in $onInit method. Used in template */
     this.breadcrumbs;
+
+    this.UserLoginService_ = UserLoginService;
 
     /** @private {!./breadcrumbs_service.BreadcrumbsService} */
     this.kdBreadcrumbsService_ = kdBreadcrumbsService;

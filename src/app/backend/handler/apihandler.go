@@ -392,6 +392,11 @@ func (apiHandler *ApiHandler) handleDeploy(request *restful.Request, response *r
 		return
 	}
 
+	if err := DeployApp(appDeploymentSpec, apiHandler.client); err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
 	log.Println("the old value of userinfo: ", userinfo)
 	log.Println(appDeploymentSpec)
 	//change the session value
@@ -401,13 +406,21 @@ func (apiHandler *ApiHandler) handleDeploy(request *restful.Request, response *r
 
 	log.Println("the new value of userinfo: ", userinfo)
 
+	//update User Resource table
 	err := user.UpdateResource(apiHandler.httpdbClient, &userinfo)
 	if err != nil {
 		handleInternalError(response, err)
 		return
 	}
 
-	if err := DeployApp(appDeploymentSpec, apiHandler.client); err != nil {
+	//Create app information in httpdatabase
+	deploy := new(httpdbuser.UserDeploy)
+	deploy.Name = userinfo.Name
+	deploy.AppName = appDeploymentSpec.Name
+	deploy.CpusUse = int(appDeploymentSpec.CpuRequirement.Value()) * appDeploymentSpec.Replicas
+	deploy.MemoryUse = int(appDeploymentSpec.MemoryRequirement.Value()/1048576) * appDeploymentSpec.Replicas
+	err = user.CreateApp(apiHandler.httpdbClient, deploy)
+	if err != nil {
 		handleInternalError(response, err)
 		return
 	}
@@ -721,6 +734,34 @@ func (apiHandler *ApiHandler) handleDeleteResource(
 	name := request.PathParameter("name")
 
 	if err := apiHandler.verber.Delete(kind, namespace, name); err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	//delete app from httpdatabase
+	appinfo, err := user.DeleteApp(apiHandler.httpdbClient, name)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	log.Println(appinfo)
+
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	userinfo := allinfo.(httpdbuser.User)
+
+	userinfo.CpusUse = userinfo.CpusUse - appinfo.CpusUse
+	userinfo.MemoryUse = userinfo.MemoryUse - appinfo.MemoryUse
+	sess.Set("allinfo", userinfo)
+
+	err = user.UpdateResource(apiHandler.httpdbClient, &userinfo)
+	if err != nil {
 		handleInternalError(response, err)
 		return
 	}

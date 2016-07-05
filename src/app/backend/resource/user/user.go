@@ -60,3 +60,13 @@ func UpdateResource(httpdbClient *client.HttpDBClient, userinfo *httpdbuser.User
 	_, err := httpdbClient.UpdateResource(userinfo)
 	return err
 }
+
+func CreateApp(httpdbClient *client.HttpDBClient, deploy *httpdbuser.UserDeploy) error {
+	_, err := httpdbClient.AddApp(deploy)
+	return err
+}
+
+func DeleteApp(httpdbClient *client.HttpDBClient, appName string) (*httpdbuser.UserDeploy, error) {
+	res, err := httpdbClient.DeleteApp(appName)
+	return res, err
+}

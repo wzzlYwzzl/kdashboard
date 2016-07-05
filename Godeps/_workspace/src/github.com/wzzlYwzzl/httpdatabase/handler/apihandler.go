@@ -82,7 +82,8 @@ func (apiHandler *ApiHandler) CreateApiHandler() http.Handler {
 		To(apiHandler.AddApp).
 		Reads(user.UserDeploy{}))
 	userWs.Route(userWs.DELETE("/app/{appname}").
-		To(apiHandler.DeleteApp))
+		To(apiHandler.DeleteApp).
+		Writes(user.UserDeploy{}))
 
 	wsContainer.Add(userWs)
 
@@ -260,7 +261,7 @@ func (apiHandler *ApiHandler) DeleteApp(request *restful.Request, response *rest
 		return
 	}
 
-	response.WriteHeader(http.StatusOK)
+	response.WriteHeaderAndEntity(http.StatusOK, deploy)
 }
 
 // Handler that writes the given error to the response and sets appropriate HTTP status headers.

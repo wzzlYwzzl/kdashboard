@@ -235,24 +235,41 @@ func (c HttpDBClient) AddApp(deploy *user.UserDeploy) (bool, error) {
 	return false, nil
 }
 
-func (c HttpDBClient) DeleteUser(appName string) error {
+func (c HttpDBClient) DeleteApp(appName string) (*user.UserDeploy, error) {
 	client := &http.Client{}
 	url := "http://" + c.Host + "/api/v1/user/app" + appName
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		log.Println(err)
-		return false, err
+		return nil, err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println(err)
-		return false, err
+		return nil, err
 	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		return true, nil
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Println("ReadAll in func GetAllInfo err: ", err)
+			return nil, err
+		}
+
+		deploy := new(user.UserDeploy)
+
+		err = json.Unmarshal(body, deploy)
+		if err != nil {
+			log.Println("json Unmarshal err: ", err)
+			return nil, err
+		}
+
+		return deploy, nil
 	}
 
-	return false, nil
+	return nil, nil
 }

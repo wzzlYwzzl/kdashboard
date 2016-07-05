@@ -32,6 +32,7 @@ export default function stateConfig($stateProvider) {
     data: {
       'kdBreadcrumbs': {
         'label': '集群概览',
+        'parent': users,
       },
     },
     views: {
