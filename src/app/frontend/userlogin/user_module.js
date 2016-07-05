@@ -40,12 +40,12 @@ export default angular
  */
 function userloginConfig($rootScope, $state, $http, $window, UserLoginService) {
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
-    if (fromState.name !== 'userlogin' && toState.name !== 'userlogin' &&
-      UserLoginService.loginuser.name === undefined) {
-      // $state.go('userlogin');
-      event.preventDefault();
-      $state.go('userlogin');
-    } 
+    // if (fromState.name !== 'userlogin' && toState.name !== 'userlogin' &&
+    //   UserLoginService.loginuser.name === undefined) {
+    //   // $state.go('userlogin');
+    //   event.preventDefault();
+    //   $state.go('userlogin');
+    // } 
     if (toState.name === 'deploy') {
       $http.get('/api/v1/users/allinfo').success(function(response) {
         UserLoginService.loginuser.cpususe = response.cpususe;

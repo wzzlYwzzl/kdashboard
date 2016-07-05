@@ -9,7 +9,7 @@ import (
 )
 
 func TestBasic() {
-	clientConf := client.Client{Host: "localhost:9080"}
+	clientConf := client.HttpDBClient{Host: "localhost:9080"}
 	user := &user.User{Name: "test-zjw", Password: "test-zjw", Cpus: 10, Memory: 500, CpusUse: 8, MemoryUse: 123}
 
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)

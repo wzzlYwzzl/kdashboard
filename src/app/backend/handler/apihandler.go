@@ -173,6 +173,10 @@ func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
 		workloadsWs.GET("/{name}").
 			To(apiHandler.handleGetWorkloads).
 			Writes(workload.Workloads{}))
+	workloadsWs.Route(
+		workloadsWs.GET("").
+			To(apiHandler.handleGetWorkloadsNoUser).
+			Writes(workload.Workloads{}))
 	wsContainer.Add(workloadsWs)
 
 	replicaSetsWs := new(restful.WebService)
@@ -543,6 +547,36 @@ func (apiHandler *ApiHandler) handleGetWorkloads(
 	response.WriteHeaderAndEntity(http.StatusCreated, result)
 }
 
+func (apiHandler *ApiHandler) handleGetWorkloadsNoUser(request *restful.Request, response *restful.Response) {
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	var namespaces []string
+
+	log.Println("handleGetWorkloads: ", allinfo)
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	loginuserinfo := allinfo.(httpdbuser.User)
+
+	if loginuserinfo.Name == "admin" {
+		namespaces = nil
+	} else {
+		namespaces = loginuserinfo.Namespaces
+	}
+
+	//namespaces = userinfo.Namespaces
+	result, err := workload.GetWorkloads(apiHandler.client, apiHandler.heapsterClient, apiHandler.httpdbClient, namespaces)
+	if err != nil {
+		log.Println("getworkloads error :", err)
+		handleInternalError(response, err)
+		return
+	}
+
+	response.WriteHeaderAndEntity(http.StatusCreated, result)
+}
+
 // Handles get Replica Sets list API call.
 func (apiHandler *ApiHandler) handleGetReplicaSets(
 	request *restful.Request, response *restful.Response) {
@@ -589,7 +623,16 @@ func (apiHandler *ApiHandler) handleGetDeployments(
 func (apiHandler *ApiHandler) handleGetPods(
 	request *restful.Request, response *restful.Response) {
 
-	result, err := pod.GetPodList(apiHandler.client, apiHandler.heapsterClient, nil)
+	sess, _ := apiHandler.globalSessions.SessionStart(response, request.Request)
+	allinfo := sess.Get("allinfo")
+
+	if allinfo == nil {
+		response.WriteHeaderAndEntity(http.StatusCreated, nil)
+		return
+	}
+	userinfo := allinfo.(httpdbuser.User)
+
+	result, err := pod.GetPodList(apiHandler.client, apiHandler.heapsterClient, userinfo.Namespaces)
 	if err != nil {
 		handleInternalError(response, err)
 		return

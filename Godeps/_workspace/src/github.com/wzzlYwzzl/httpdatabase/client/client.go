@@ -10,11 +10,11 @@ import (
 	"github.com/wzzlYwzzl/httpdatabase/resource/user"
 )
 
-type Client struct {
+type HttpDBClient struct {
 	Host string
 }
 
-func (c Client) JudgeName(name string, password string) (bool, error) {
+func (c HttpDBClient) JudgeName(name string, password string) (bool, error) {
 	url := "http://" + c.Host + "/api/v1/user/" + name + "/" + password
 	resp, err := http.Get(url)
 	if err != nil {
@@ -29,7 +29,7 @@ func (c Client) JudgeName(name string, password string) (bool, error) {
 	return false, nil
 }
 
-func (c Client) CreateNS(name, namespace string) (bool, error) {
+func (c HttpDBClient) CreateNS(name, namespace string) (bool, error) {
 	url := "http://" + c.Host + "/api/v1/user/" + name + "/" + namespace
 	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
@@ -44,7 +44,7 @@ func (c Client) CreateNS(name, namespace string) (bool, error) {
 	return false, nil
 }
 
-func (c Client) GetNS(name string) ([]string, error) {
+func (c HttpDBClient) GetNS(name string) ([]string, error) {
 	ns := make([]string, 0, 10)
 	url := "http://" + c.Host + "/api/v1/user/ns/" + name
 	resp, err := http.Get(url)
@@ -69,7 +69,7 @@ func (c Client) GetNS(name string) ([]string, error) {
 	return ns, nil
 }
 
-func (c Client) GetNSAll(name string) ([]string, error) {
+func (c HttpDBClient) GetNSAll(name string) ([]string, error) {
 	ns := make([]string, 0, 10)
 	url := "http://" + c.Host + "/api/v1/user/ns/all/" + name
 	resp, err := http.Get(url)
@@ -93,7 +93,7 @@ func (c Client) GetNSAll(name string) ([]string, error) {
 	return ns, nil
 }
 
-func (c Client) GetAllInfo(name string) (*user.User, error) {
+func (c HttpDBClient) GetAllInfo(name string) (*user.User, error) {
 	user := new(user.User)
 	url := "http://" + c.Host + "/api/v1/user/allinfo/" + name
 	resp, err := http.Get(url)
@@ -119,7 +119,7 @@ func (c Client) GetAllInfo(name string) (*user.User, error) {
 	return user, nil
 }
 
-func (c Client) DeleteUser(name string) (bool, error) {
+func (c HttpDBClient) DeleteUser(name string) (bool, error) {
 	client := &http.Client{}
 	url := "http://" + c.Host + "/api/v1/user/" + name
 	req, err := http.NewRequest("DELETE", url, nil)
@@ -141,7 +141,7 @@ func (c Client) DeleteUser(name string) (bool, error) {
 	return false, nil
 }
 
-func (c Client) CreateUser(user *user.User) (bool, error) {
+func (c HttpDBClient) CreateUser(user *user.User) (bool, error) {
 	url := "http://" + c.Host + "/api/v1/user/"
 	bs, err := json.Marshal(*user)
 	if err != nil {
@@ -163,7 +163,7 @@ func (c Client) CreateUser(user *user.User) (bool, error) {
 	return false, nil
 }
 
-func (c Client) UpdateResource(user *user.User) (bool, error) {
+func (c HttpDBClient) UpdateResource(user *user.User) (bool, error) {
 	url := "http://" + c.Host + "/api/v1/user/resource"
 	bs, err := json.Marshal(*user)
 	if err != nil {
@@ -185,7 +185,7 @@ func (c Client) UpdateResource(user *user.User) (bool, error) {
 	return false, nil
 }
 
-func (c Client) GetAllUserInfo() (*user.UserList, error) {
+func (c HttpDBClient) GetAllUserInfo() (*user.UserList, error) {
 	userlist := new(user.UserList)
 	url := "http://" + c.Host + "/api/v1/user/all"
 
@@ -210,4 +210,49 @@ func (c Client) GetAllUserInfo() (*user.UserList, error) {
 	}
 
 	return userlist, nil
+}
+
+func (c HttpDBClient) AddApp(deploy *user.UserDeploy) (bool, error) {
+	url := "http://" + c.Host + "/api/v1/user/app"
+
+	bs, err := json.Marshal(*deploy)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	reader := bytes.NewReader(bs)
+	resp, err := http.Post(url, "application/json", reader)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	if resp.StatusCode == http.StatusCreated {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (c HttpDBClient) DeleteUser(appName string) error {
+	client := &http.Client{}
+	url := "http://" + c.Host + "/api/v1/user/app" + appName
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	if resp.StatusCode == http.StatusOK {
+		return true, nil
+	}
+
+	return false, nil
 }

@@ -44,11 +44,6 @@ func (c HttpDBClient) CreateNS(name, namespace string) (bool, error) {
 	return false, nil
 }
 
-/**
- * get one user's namespace from the database server
- * @param  {string} name [the name of user]
- * @return {[]string}   the user's namespaces
- */
 func (c HttpDBClient) GetNS(name string) ([]string, error) {
 	ns := make([]string, 0, 10)
 	url := "http://" + c.Host + "/api/v1/user/ns/" + name
@@ -215,4 +210,49 @@ func (c HttpDBClient) GetAllUserInfo() (*user.UserList, error) {
 	}
 
 	return userlist, nil
+}
+
+func (c HttpDBClient) AddApp(deploy *user.UserDeploy) (bool, error) {
+	url := "http://" + c.Host + "/api/v1/user/app"
+
+	bs, err := json.Marshal(*deploy)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	reader := bytes.NewReader(bs)
+	resp, err := http.Post(url, "application/json", reader)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	if resp.StatusCode == http.StatusCreated {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (c HttpDBClient) DeleteUser(appName string) error {
+	client := &http.Client{}
+	url := "http://" + c.Host + "/api/v1/user/app" + appName
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	if resp.StatusCode == http.StatusOK {
+		return true, nil
+	}
+
+	return false, nil
 }

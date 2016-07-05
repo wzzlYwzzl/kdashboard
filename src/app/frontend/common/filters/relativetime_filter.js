@@ -47,7 +47,7 @@ const UnitConversions = {
  * @enum {string}
  */
 const TimeConstants = {
-  NOT_YET: `还没有开始`,
+  NOT_YET: `还未开始`,
   NOW: `刚刚`,
 };
 

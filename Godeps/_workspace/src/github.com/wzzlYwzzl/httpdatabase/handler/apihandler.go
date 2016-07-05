@@ -78,6 +78,11 @@ func (apiHandler *ApiHandler) CreateApiHandler() http.Handler {
 	userWs.Route(userWs.GET("/all").
 		To(apiHandler.getAllUserInfo).
 		Writes(user.UserList{}))
+	userWs.Route(userWs.POST("/app").
+		To(apiHandler.AddApp).
+		Reads(user.UserDeploy{}))
+	userWs.Route(userWs.DELETE("/app/{appname}").
+		To(apiHandler.DeleteApp))
 
 	wsContainer.Add(userWs)
 
@@ -225,6 +230,37 @@ func (apiHandler *ApiHandler) getAllUserInfo(request *restful.Request, response 
 	}
 
 	response.WriteHeaderAndEntity(http.StatusOK, userlist)
+}
+
+func (apiHandler *ApiHandler) AddApp(request *restful.Request, response *restful.Response) {
+	deploy := new(user.UserDeploy)
+	err := request.ReadEntity(deploy)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	err = deploy.CreateApp(apiHandler.DBconf)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	response.WriteHeader(http.StatusCreated)
+}
+
+func (apiHandler *ApiHandler) DeleteApp(request *restful.Request, response *restful.Response) {
+	appName := request.PathParameter("appname")
+	deploy := new(user.UserDeploy)
+	deploy.AppName = appName
+
+	err := deploy.DeleteApp(apiHandler.DBconf)
+	if err != nil {
+		handleInternalError(response, err)
+		return
+	}
+
+	response.WriteHeader(http.StatusOK)
 }
 
 // Handler that writes the given error to the response and sets appropriate HTTP status headers.
