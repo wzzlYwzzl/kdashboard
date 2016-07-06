@@ -22,10 +22,10 @@ export class BreadcrumbsService {
    * @param {!ui.router.$state} $state
    * @ngInject
    */
-  constructor($state, UserLoginService) { 
-      this.state_ = $state; 
-      this.userservice = UserLoginService;
-    }
+  constructor($state, UserLoginService) {
+    this.state_ = $state;
+    this.userservice = UserLoginService;
+  }
 
   /**
    * Returns breadcrumb config object if it is defined on state, undefined otherwise.

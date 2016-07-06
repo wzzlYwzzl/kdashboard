@@ -35,18 +35,19 @@ export class UserController {
     let password = this.user.password;
     this.UserLoginService.setUser(username, password);
     let that = this;
-    that.http_.post('/api/v1/login', {name: username, password: password}).success(function(response) {
-       that.UserLoginService.loginuser.cpus = response.cpus;
-       that.UserLoginService.loginuser.memory = response.memory;
-       that.UserLoginService.loginuser.cpususe = response.cpususe;
-       that.UserLoginService.loginuser.memoryuse = response.memoryuse;
+    that.http_.post('/api/v1/login', {name: username, password: password})
+        .success(function(response) {
+          that.UserLoginService.loginuser.cpus = response.cpus;
+          that.UserLoginService.loginuser.memory = response.memory;
+          that.UserLoginService.loginuser.cpususe = response.cpususe;
+          that.UserLoginService.loginuser.memoryuse = response.memoryuse;
 
-      if (that.UserLoginService.loginuser.name === 'admin') {
-        that.state_.go(users);
-      } else {
-        that.state_.go(workloads, {name: that.UserLoginService.loginuser.name});
-      }
-      // that.rootScope_.user = that.user;
-    });
+          if (that.UserLoginService.loginuser.name === 'admin') {
+            that.state_.go(users);
+          } else {
+            that.state_.go(workloads, {name: that.UserLoginService.loginuser.name});
+          }
+          // that.rootScope_.user = that.user;
+        });
   }
 }

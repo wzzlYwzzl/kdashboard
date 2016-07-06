@@ -46,7 +46,7 @@ function spawnDockerProcess(args, doneFn) {
  * The image is tagged with the image name configuration constant.
  */
 gulp.task('docker-image:canary', ['build', 'docker-file'], function(doneFn) {
-  //buildDockerImage([[conf.deploy.canaryImageName, conf.paths.dist]], doneFn);
+  // buildDockerImage([[conf.deploy.canaryImageName, conf.paths.dist]], doneFn);
 });
 
 /**
@@ -144,7 +144,7 @@ function pushToDockerCloud(version, doneFn) {
   let childTask = child.spawn('docker', ['push', imageUri], {stdio: 'inherit'});
 
   childTask.on('exit', function(code) {
-    if(code === 0) {
+    if (code === 0) {
       doneFn();
     } else {
       doneFn(new Error(`docker push error, code: ${code}`));

@@ -45,7 +45,7 @@ function userloginConfig($rootScope, $state, $http, $window, UserLoginService) {
     //   // $state.go('userlogin');
     //   event.preventDefault();
     //   $state.go('userlogin');
-    // } 
+    // }
     if (toState.name === 'deploy') {
       $http.get('/api/v1/users/allinfo').success(function(response) {
         UserLoginService.loginuser.cpususe = response.cpususe;

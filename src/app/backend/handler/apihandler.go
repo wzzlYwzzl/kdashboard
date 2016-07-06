@@ -399,15 +399,22 @@ func (apiHandler *ApiHandler) handleDeploy(request *restful.Request, response *r
 
 	log.Println("the old value of userinfo: ", userinfo)
 	log.Println(appDeploymentSpec)
+
+	//the resource used by this deployment, it will be transformed to the httpdb server.
+	resourceChange := new(httpdbuser.User)
+	resourceChange.Name = userinfo.Name
+	resourceChange.CpusUse = int(appDeploymentSpec.CpuRequirement.Value()) * appDeploymentSpec.Replicas
+	resourceChange.MemoryUse = int(appDeploymentSpec.MemoryRequirement.Value()/1048576) * appDeploymentSpec.Replicas
+
 	//change the session value
-	userinfo.CpusUse = userinfo.CpusUse + int(appDeploymentSpec.CpuRequirement.Value())*appDeploymentSpec.Replicas
-	userinfo.MemoryUse = userinfo.MemoryUse + int(appDeploymentSpec.MemoryRequirement.Value()/1048576)*appDeploymentSpec.Replicas
+	userinfo.CpusUse = userinfo.CpusUse + resourceChange.CpusUse
+	userinfo.MemoryUse = userinfo.MemoryUse + resourceChange.MemoryUse
 	sess.Set("allinfo", userinfo)
 
 	log.Println("the new value of userinfo: ", userinfo)
 
 	//update User Resource table
-	err := user.UpdateResource(apiHandler.httpdbClient, &userinfo)
+	err := user.UpdateResource(apiHandler.httpdbClient, resourceChange)
 	if err != nil {
 		handleInternalError(response, err)
 		return
@@ -741,8 +748,7 @@ func (apiHandler *ApiHandler) handleDeleteResource(
 	//delete app from httpdatabase
 	appinfo, err := user.DeleteApp(apiHandler.httpdbClient, name)
 	if err != nil {
-		handleInternalError(response, err)
-		return
+		log.Println(err)
 	}
 
 	log.Println(appinfo)
@@ -756,15 +762,28 @@ func (apiHandler *ApiHandler) handleDeleteResource(
 	}
 	userinfo := allinfo.(httpdbuser.User)
 
-	userinfo.CpusUse = userinfo.CpusUse - appinfo.CpusUse
-	userinfo.MemoryUse = userinfo.MemoryUse - appinfo.MemoryUse
-	sess.Set("allinfo", userinfo)
+	log.Println("log userinfo", userinfo)
 
-	err = user.UpdateResource(apiHandler.httpdbClient, &userinfo)
-	if err != nil {
-		handleInternalError(response, err)
-		return
+	if appinfo != nil {
+		userinfo.CpusUse = userinfo.CpusUse - appinfo.CpusUse
+		userinfo.MemoryUse = userinfo.MemoryUse - appinfo.MemoryUse
+
+		sess.Set("allinfo", userinfo)
+
+		// the delete of app will update the resource use
+		resourceChange := new(httpdbuser.User)
+		resourceChange.Name = userinfo.Name
+		resourceChange.CpusUse = 0 - appinfo.CpusUse
+		resourceChange.MemoryUse = 0 - appinfo.MemoryUse
+
+		err = user.UpdateResource(apiHandler.httpdbClient, resourceChange)
+		if err != nil {
+			handleInternalError(response, err)
+			return
+		}
 	}
+
+	log.Println("new userinfo", userinfo)
 
 	response.WriteHeader(http.StatusOK)
 }
