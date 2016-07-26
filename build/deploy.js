@@ -46,7 +46,7 @@ function spawnDockerProcess(args, doneFn) {
  * The image is tagged with the image name configuration constant.
  */
 gulp.task('docker-image:canary', ['build', 'docker-file'], function(doneFn) {
-  // buildDockerImage([[conf.deploy.canaryImageName, conf.paths.dist]], doneFn);
+  buildDockerImage([[conf.deploy.canaryImageName, conf.paths.dist]], doneFn);
 });
 
 /**

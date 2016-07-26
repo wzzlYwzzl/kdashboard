@@ -100,6 +100,18 @@ export default class DeployFromSettingsController {
      */
     this.variables;
 
+    /**
+     * The volume of pod.
+     * @export {!Array<!backendApi.VolumeMount>}
+     */
+    this.volumesMount;
+
+    /**
+     * The supported volume type.
+     * @export {!Array<string>}
+     */
+    this.volumeTypes = ['Host', 'Cetusfs'];
+
     /** @export {boolean} */
     this.isExternal = false;
 

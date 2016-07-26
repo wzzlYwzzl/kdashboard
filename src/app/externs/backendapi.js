@@ -35,6 +35,15 @@ backendApi.PortMapping;
 
 /**
  * @typedef {{
+ *   volumeType: string,
+ *   hostPath: string,
+ *   containerPath: string
+ * }}
+ */
+backendApi.VolumeMount;
+
+/**
+ * @typedef {{
  *   name: string,
  *   value: string
  * }}

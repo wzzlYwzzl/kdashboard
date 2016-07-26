@@ -39,7 +39,7 @@ export default angular
  * @ngInject
  */
 function userloginConfig($rootScope, $state, $http, $window, UserLoginService) {
-  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+  $rootScope.$on('$stateChangeStart', function(event, toState) {
     // if (fromState.name !== 'userlogin' && toState.name !== 'userlogin' &&
     //   UserLoginService.loginuser.name === undefined) {
     //   // $state.go('userlogin');

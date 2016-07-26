@@ -47,14 +47,14 @@ a {
   }
 }
 
-span.loginicon {
+.loginicon {
   //margin: auto;
- position: relative;
- left: 1380px;
+  position: relative;
+  left: 1380px;
 }
 
 .toolbarlogo {
-  color: #FFFFFF;
+  color: #fff;
   font-size: 25px;
 }
 
@@ -68,7 +68,7 @@ span.loginicon {
 
 .kd-toolbar-tools {
   margin: auto;
-  background-color: #F44336;
+  background-color: #f44336;
 }
 
 .kd-app-content {

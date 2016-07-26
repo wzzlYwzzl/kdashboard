@@ -1,0 +1,40 @@
+<div class="kd-environment-variables-title md-body-2">为容器挂载存储卷</div>
+<div ng-repeat="volumeMount in ctrl.volumesMount">
+  <ng-form name="volumesSet" layout="row">
+    <md-input-container flex="none" class="kd-deploy-input-row">
+      <label>卷类型</label>
+      <md-select ng-model="volumeMount.protocol" name="volumeType" is-external="ctrl.isExternal"
+                 required >
+        <md-option ng-repeat="volumeType in ctrl.volumeTypes" ng-value="volumeType">
+          {{volumeType}}
+        </md-option>
+      </md-select>
+      <ng-messages for="volumesSet.volumeType.$error" role="alert" multiple>
+        <ng-message when="required">不能为空</ng-message>
+    </md-input-container>
+    <div flex="5"></div>
+    <md-input-container flex="50" class="kd-deploy-input-row">
+      <label>要挂载的路径</label>
+      <input ng-model="volumeMount.hostPath" ng-change="ctrl.checkVolumeMount(volumesSet, $index)"
+             type="text" name="hostpath">
+      <ng-messages for="volumesSet.hostpath.$error" role="alert" multiple>
+      </ng-messages>
+    </md-input-container>
+    <div flex="5"></div>
+    <md-input-container flex="50" class="kd-deploy-input-row">
+      <label>挂到容器内部的路径</label>
+      <input ng-model="volumeMount.containerPath"
+             ng-change="ctrl.checkVolumeMount(volumesSet, $index)"
+             type="text" name="containerpath">
+      <ng-messages for="volumesSet.containerpath.$error" role="alert" multiple>
+      </ng-messages>
+    </md-input-container>
+    <div flex="10">
+      <md-button type="button" ng-if="ctrl.isRemovable($index)"
+                 ng-click="ctrl.remove($index)"
+                 class="material-icons md-icon-button">
+        delete
+      </md-button>
+    </div>
+  </ng-form>
+</div>

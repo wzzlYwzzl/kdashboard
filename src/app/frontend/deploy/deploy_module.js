@@ -27,6 +27,7 @@ import validImageReferenceDirective from './validimagereference_directive';
 import validProtocolDirective from './validprotocol_directive';
 import helpSectionModule from './helpsection/helpsection_module';
 import validatorsModule from '../common/validators/validators_module';
+import volumesMountDirective from './volumes_directive';
 
 /**
  * Angular module for the deploy view.
@@ -55,4 +56,5 @@ export default angular
     .directive('kdUpload', uploadDirective)
     .directive('kdPortMappings', portMappingsDirective)
     .directive('kdEnvironmentVariables', environmentVariablesDirective)
+    .directive('kdVolumesMount', volumesMountDirective)
     .directive('kdDeployLabel', deployLabelDirective);

@@ -30,7 +30,6 @@ import path from 'path';
 import conf from './conf';
 import {multiDest} from './multidest';
 
-
 /**
  * Builds production package for current architecture and places it in the dist directory.
  */
