@@ -16,6 +16,7 @@ import {ServiceListController} from './servicelist_controller';
 import {actionbarViewName} from 'chrome/chrome_state';
 import {breadcrumbsConfig} from 'common/components/breadcrumbs/breadcrumbs_service';
 import {stateName, stateUrl} from './servicelist_state';
+import {stateName as rcState} from 'replicationcontrollerlist/replicationcontrollerlist_state';
 
 /**
  * Configures states for the service list view.
@@ -33,6 +34,7 @@ export default function stateConfig($stateProvider) {
     data: {
       [breadcrumbsConfig]: {
         'label': '服务',
+        'parent': rcState,
       },
     },
     views: {
