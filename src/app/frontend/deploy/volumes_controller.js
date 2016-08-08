@@ -31,6 +31,12 @@ export default class VolumesMountController {
      * @export {!Array<string>}
      */
     this.volumeTypes;
+
+    /**
+     * Whether the mount is readonly
+     * @export {boolean}
+     */
+    this.readonly;
   }
 
   /**

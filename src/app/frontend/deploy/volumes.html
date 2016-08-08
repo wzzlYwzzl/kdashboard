@@ -29,6 +29,15 @@
       <ng-messages for="volumesSet.containerpath.$error" role="alert" multiple>
       </ng-messages>
     </md-input-container>
+    <div flex="5"></div>
+    <md-input-container flex="none" class="kd-deploy-input-row" >
+    <!--     <md-switch ng-model="ctrl.readonly" >只读</md-switch> -->
+     <!--  <label>只读</label>
+      <input type="checkbox" ng-model="ctrl.readonly"> -->
+      <md-checkbox ng-model="ctrl.readonly" class="md-primary">
+        只读
+      </md-checkbox>
+    </md-input-container>
     <div flex="10">
       <md-button type="button" ng-if="ctrl.isRemovable($index)"
                  ng-click="ctrl.remove($index)"
