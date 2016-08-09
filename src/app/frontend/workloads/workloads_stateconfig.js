@@ -55,8 +55,8 @@ export default function stateConfig($stateProvider) {
  * @return {!angular.$q.Promise}
  * @ngInject
  */
-export function resolveWorkloads($resource, $stateParams) {
+export function resolveWorkloads($resource, UserLoginService) {
   /** @type {!angular.Resource<!backendApi.Workloads>} */
-  let resource = $resource(`api/v1/workloads/${$stateParams.name}`);
+  let resource = $resource(`api/v1/workloads/${UserLoginService.loginuser.name}`);
   return resource.get().$promise;
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {stateName as replicationcontrollers} from 'replicationcontrollerlist/replicationcontrollerlist_state';
+import {stateName as workloadsstate} from 'workloads/workloads_state';
 
 /**
  * Controller for the deploy view.
@@ -85,5 +85,5 @@ export default class DeployController {
    * Cancels the deployment form.
    * @export
    */
-  cancel() { this.state_.go(replicationcontrollers); }
+  cancel() { this.state_.go(workloadsstate); }
 }

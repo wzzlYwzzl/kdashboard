@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {stateName as replicationcontrollerliststate} from 'replicationcontrollerlist/replicationcontrollerlist_state';
+import {stateName as workloadsstate} from 'workloads/workloads_state';
 
 /**
  * Controller for the deploy from file directive.
@@ -88,7 +88,7 @@ export default class DeployFromFileController {
           if (response.error.length > 0) {
             this.errorDialog_.open('Deployment has been partly completed', response.error);
           }
-          this.state_.go(replicationcontrollerliststate);
+          this.state_.go(workloadsstate);
         },
         (err) => {
           defer.reject(err);  // Progress ends

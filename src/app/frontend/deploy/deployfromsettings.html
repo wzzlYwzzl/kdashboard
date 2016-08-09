@@ -145,7 +145,7 @@ limitations under the License.
   <kd-help-section>
     <div layout="row">
       <md-input-container flex="auto" >
-        <label>CPU资源数(1000表示一个CPU核, 剩余{{ctrl.maxCpus}}可用)</label>
+        <label>CPU资源数(剩余{{ctrl.maxCpus}}可用)</label>
         <input ng-model="ctrl.cpuRequirement" type="number" name="cpuRequirement" min="0" max="ctrl.maxCpus" required>
         <ng-messages for="ctrl.form.cpuRequirement.$error" role="alert" multiple>
           <ng-message when="number">CPU内核数必须是一个有效的数字</ng-message>

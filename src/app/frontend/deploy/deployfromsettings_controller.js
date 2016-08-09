@@ -15,7 +15,7 @@
 import showNamespaceDialog from './createnamespace_dialog';
 import showCreateSecretDialog from './createsecret_dialog';
 import DeployLabel from './deploylabel';
-import {stateName as replicationcontrollerliststate} from 'replicationcontrollerlist/replicationcontrollerlist_state';
+import {stateName as workloadsstate} from 'workloads/workloads_state';
 import {uniqueNameValidationKey} from './uniquename_directive';
 import DockerImageReference from '../common/docker/dockerimagereference';
 
@@ -231,7 +231,7 @@ export default class DeployFromSettingsController {
         (savedConfig) => {
           defer.resolve(savedConfig);  // Progress ends
           this.log_.info('Successfully deployed application: ', savedConfig);
-          this.state_.go(replicationcontrollerliststate);
+          this.state_.go(workloadsstate);
         },
         (err) => {
           defer.reject(err);  // Progress ends

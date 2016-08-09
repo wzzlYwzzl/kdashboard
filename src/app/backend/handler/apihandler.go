@@ -391,6 +391,8 @@ func (apiHandler *ApiHandler) handleDeploy(request *restful.Request, response *r
 		handleInternalError(response, err)
 		return
 	}
+	log.Println("print all ", appDeploymentSpec.CpuRequirement)
+	log.Println("print the value ", appDeploymentSpec.CpuRequirement.Value())
 
 	if err := DeployApp(appDeploymentSpec, apiHandler.client); err != nil {
 		handleInternalError(response, err)

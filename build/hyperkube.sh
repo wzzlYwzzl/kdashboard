@@ -50,7 +50,5 @@ docker run -d --net=host --privileged gcr.io/google_containers/hyperkube:v${K8S_
     /hyperkube proxy --master=http://127.0.0.1:${PORT} --v=2
 
 # Runs Heapster in standalone mode
-# docker run --net=host -d gcr.io/google_containers/heapster:v${HEAPSTER_VERSION} -port ${HEAPSTER_PORT} \
-#     --source=kubernetes:http://127.0.0.1:${PORT}?inClusterConfig=false&auth=""
-
-# docker run --net=host -d gcr.io/google_containers/heapster:v1.0.2 -port 8082 --source=kubernetes:http://192.168.100.59:8888?inClusterConfig=false&auth=""
+docker run --net=host -d gcr.io/google_containers/heapster:v${HEAPSTER_VERSION} -port ${HEAPSTER_PORT} \
+    --source=kubernetes:http://127.0.0.1:${PORT}?inClusterConfig=false&auth=""
