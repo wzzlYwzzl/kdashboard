@@ -54,7 +54,7 @@ export default class VolumesMountController {
 
   /**
    * @param {string} defaultType
-   * @return {!backendApi.Volume}
+   * @return {!backendApi.VolumeMount}
    * @private
    */
   newVolumeMount_(defaultType) {
