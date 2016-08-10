@@ -123,7 +123,7 @@ export default class VolumesMountController {
 
   /**
    * Returns true when the given volume mount is filled or empty (both path), false otherwise.
-   * @param {!backendApi.VolumeMount} volumeMont
+   * @param {!backendApi.VolumeMount} volumeMount
    * @return {boolean}
    * @private
    */
