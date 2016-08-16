@@ -160,10 +160,7 @@ export default {
   /**
    * Absolute paths to known directories, e.g., to source directory.
    */
-  /**
-   * Absolute paths to known directories, e.g., to source directory.
-   */
-  paths: {
+ paths: {
     app: path.join(basePath, 'src/app'),
     assets: path.join(basePath, 'src/app/assets'),
     base: basePath,
