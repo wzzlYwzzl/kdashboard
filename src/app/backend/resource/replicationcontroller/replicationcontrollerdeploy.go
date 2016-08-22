@@ -19,6 +19,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/kubernetes/dashboard/resource/volume"
 	"k8s.io/kubernetes/pkg/api"
 	"k8s.io/kubernetes/pkg/api/resource"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
@@ -81,6 +82,24 @@ type AppDeploymentSpec struct {
 
 	// Whether to run the container as privileged user (essentially equivalent to root on the host).
 	RunAsPrivileged bool `json:"runAsPrivileged"`
+
+	//Define host volume
+	Volumes []HostVolume `json:"hostVolume"`
+}
+
+// Host type volume defination
+type HostVolume struct {
+	//The unique volume name
+	Name string `json:"name"`
+
+	//Readonly
+	ReadOnly bool `json:"readonly"`
+
+	//Path in the container
+	MountPath string `json:"mountPath"`
+
+	//Host path to be mounted
+	HostPath string `json:"hostPath"`
 }
 
 // AppDeploymentFromFileSpec is a specification for deployment from file
@@ -143,7 +162,7 @@ type Protocols struct {
 // DeployApp deploys an app based on the given configuration. The app is deployed using the given
 // client. App deployment consists of a replication controller and an optional service. Both of them
 // share common labels.
-func DeployApp(spec *AppDeploymentSpec, client client.Interface) error {
+func DeployApp(spec *AppDeploymentSpec, client client.Interface, volInfo *volume.VolumeRelatedInfo) error {
 	log.Printf("Deploying %s application into %s namespace", spec.Name, spec.Namespace)
 
 	annotations := map[string]string{}
@@ -182,11 +201,18 @@ func DeployApp(spec *AppDeploymentSpec, client client.Interface) error {
 	if spec.MemoryRequirement != nil {
 		containerSpec.Resources.Requests[api.ResourceMemory] = *spec.MemoryRequirement
 	}
+	if spec.Volumes != nil {
+		containerSpec.VolumeMounts = convertVolMountVarsSpec(spec.Volumes)
+	}
+
 	podSpec := api.PodSpec{
 		Containers: []api.Container{containerSpec},
 	}
 	if spec.ImagePullSecret != nil {
 		podSpec.ImagePullSecrets = []api.LocalObjectReference{{Name: *spec.ImagePullSecret}}
+	}
+	if spec.Volumes != nil {
+		podSpec.Volumes = convertVolumeVarsSpec(spec.Volumes, volInfo)
 	}
 
 	podTemplate := &api.PodTemplateSpec{
@@ -258,6 +284,27 @@ func convertEnvVarsSpec(variables []EnvironmentVariable) []api.EnvVar {
 	for _, variable := range variables {
 		result = append(result, api.EnvVar{Name: variable.Name, Value: variable.Value})
 	}
+	return result
+}
+
+func convertVolMountVarsSpec(volumes []HostVolume) []api.VolumeMount {
+	var result []api.VolumeMount
+	for _, v := range volumes {
+		result = append(result, api.VolumeMount{Name: v.Name, ReadOnly: v.ReadOnly, MountPath: v.MountPath})
+	}
+
+	return result
+}
+
+func convertVolumeVarsSpec(volumes []HostVolume, volInfo *volume.VolumeRelatedInfo) []api.Volume {
+	var result []api.Volume
+	for _, v := range volumes {
+		realPath, _ := volume.CreateRealPath(v.HostPath, volInfo)
+		hostVolume := &api.HostPathVolumeSource{Path: realPath}
+		volSource := api.VolumeSource{HostPath: hostVolume}
+		result = append(result, api.Volume{Name: v.Name, VolumeSource: volSource})
+	}
+
 	return result
 }
 

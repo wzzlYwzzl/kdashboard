@@ -18,13 +18,18 @@
 export class WorkloadsController {
   /**
    * @param {!backendApi.Workloads} workloads
+   * @param {!userlogin/user_service.UserLoginService} UserLoginService
    * @ngInject
    */
-  constructor(workloads, $rootScope, UserLoginService) {
+  constructor(workloads, UserLoginService) {
     /** @export {!backendApi.Workloads} */
     this.workloads = workloads;
     this.UserLoginService = UserLoginService;
   }
 
+/**
+ * judge whether the user is admin
+ * @return {Boolean}
+ */
   isUserVisible() { return this.UserLoginService.loginuser.name === 'admin'; }
 }

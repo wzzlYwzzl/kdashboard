@@ -19,6 +19,9 @@ import {stateName as workloads} from 'workloads/workloads_state';
  */
 export class UserController {
   /**
+   * @param {!ui.router.$state} $state
+   * @param {!angular.$http} $http
+   * @param {!./../userlogin/user_service} UserLoginService
    * @ngInject
    */
   constructor($state, $http, UserLoginService) {
@@ -27,25 +30,28 @@ export class UserController {
     this.user.password = '';
     this.state_ = $state;
     this.http_ = $http;
-    this.UserLoginService = UserLoginService;
+    this.LoginService = UserLoginService;
   }
 
+/**
+   * @export
+   */
   login() {
     let username = this.user.username;
     let password = this.user.password;
-    this.UserLoginService.setUser(username, password);
+    this.LoginService.setUser(username, password);
     let that = this;
     that.http_.post('/api/v1/login', {name: username, password: password})
         .success(function(response) {
-          that.UserLoginService.loginuser.cpus = response.cpus;
-          that.UserLoginService.loginuser.memory = response.memory;
-          that.UserLoginService.loginuser.cpususe = response.cpususe;
-          that.UserLoginService.loginuser.memoryuse = response.memoryuse;
+          that.LoginService.loginuser.cpus = response.cpus;
+          that.LoginService.loginuser.memory = response.memory;
+          that.LoginService.loginuser.cpususe = response.cpususe;
+          that.LoginService.loginuser.memoryuse = response.memoryuse;
 
-          if (that.UserLoginService.loginuser.name === 'admin') {
+          if (that.LoginService.loginuser.name === 'admin') {
             that.state_.go(users);
           } else {
-            that.state_.go(workloads, {name: that.UserLoginService.loginuser.name});
+            that.state_.go(workloads, {name: that.LoginService.loginuser.name});
           }
           // that.rootScope_.user = that.user;
         });

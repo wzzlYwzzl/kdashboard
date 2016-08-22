@@ -1,6 +1,21 @@
+ /**
+  *  @final
+  */
 export default class UserLoginService {
-  constructor() { this.loginuser = {}; }
 
+    /**
+     * @ngInject
+     */
+  constructor() { 
+/** @export  {Object}*/
+    this.loginuser = {}; 
+}
+
+/**
+   * @param {!string} username
+   * @param {!string} password
+   * @export
+   */
   setUser(username, password) {
     this.loginuser = {
       name: username,

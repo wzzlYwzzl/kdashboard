@@ -34,11 +34,10 @@ export default angular
  * Configures event catchers for the state change.
  *
  * @param {!angular.Scope} $rootScope
- * @param {!ui.router.$state} $state
- * @param {!angular.$window} $window
+ * @param {!angular.$http} $http
  * @ngInject
  */
-function userloginConfig($rootScope, $state, $http, $window, UserLoginService) {
+function userloginConfig($rootScope, $http, UserLoginService) {
   $rootScope.$on('$stateChangeStart', function(event, toState) {
     // if (fromState.name !== 'userlogin' && toState.name !== 'userlogin' &&
     //   UserLoginService.loginuser.name === undefined) {

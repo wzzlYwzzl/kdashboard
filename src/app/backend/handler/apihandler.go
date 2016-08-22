@@ -36,6 +36,7 @@ import (
 	. "github.com/kubernetes/dashboard/resource/secret"
 	resourceService "github.com/kubernetes/dashboard/resource/service"
 	"github.com/kubernetes/dashboard/resource/user"
+	"github.com/kubernetes/dashboard/resource/volume"
 	"github.com/kubernetes/dashboard/resource/workload"
 	. "github.com/kubernetes/dashboard/validation"
 	//"github.com/wzzlYwzzl/httpdatabase/resource/user"
@@ -55,12 +56,13 @@ const (
 // ApiHandler is a representation of API handler. Structure contains client, Heapster client and
 // client configuration.
 type ApiHandler struct {
-	client         *client.Client
-	heapsterClient HeapsterClient
-	clientConfig   clientcmd.ClientConfig
-	verber         common.ResourceVerber
-	httpdbClient   *HttpDBClient
-	globalSessions *session.Manager
+	client            *client.Client
+	heapsterClient    HeapsterClient
+	clientConfig      clientcmd.ClientConfig
+	verber            common.ResourceVerber
+	httpdbClient      *HttpDBClient
+	globalSessions    *session.Manager
+	cetusfsVolumePath string
 }
 
 // Web-service filter function used for request and response logging.
@@ -90,10 +92,10 @@ func FormatResponseLog(resp *restful.Response, req *restful.Request) string {
 
 // CreateHttpApiHandler creates a new HTTP handler that handles all requests to the API of the backend.
 func CreateHttpApiHandler(client *client.Client, heapsterClient HeapsterClient,
-	clientConfig clientcmd.ClientConfig, httpdbClient *HttpDBClient, globalSessions *session.Manager) http.Handler {
+	clientConfig clientcmd.ClientConfig, httpdbClient *HttpDBClient, globalSessions *session.Manager, rootPath string) http.Handler {
 
 	verber := common.NewResourceVerber(client.RESTClient, client.ExtensionsClient.RESTClient)
-	apiHandler := ApiHandler{client, heapsterClient, clientConfig, verber, httpdbClient, globalSessions}
+	apiHandler := ApiHandler{client, heapsterClient, clientConfig, verber, httpdbClient, globalSessions, rootPath}
 	wsContainer := restful.NewContainer()
 
 	deployWs := new(restful.WebService)
@@ -386,6 +388,11 @@ func (apiHandler *ApiHandler) handleDeploy(request *restful.Request, response *r
 	}
 	userinfo := allinfo.(httpdbuser.User)
 
+	volInfo := new(volume.VolumeRelatedInfo)
+	volInfo.U.Name = userinfo.Name
+	volInfo.U.Password = userinfo.Password
+	volInfo.CetusfsVolPath = apiHandler.cetusfsVolumePath
+
 	appDeploymentSpec := new(AppDeploymentSpec)
 	if err := request.ReadEntity(appDeploymentSpec); err != nil {
 		handleInternalError(response, err)
@@ -394,7 +401,7 @@ func (apiHandler *ApiHandler) handleDeploy(request *restful.Request, response *r
 	log.Println("print all ", appDeploymentSpec.CpuRequirement)
 	log.Println("print the value ", appDeploymentSpec.CpuRequirement.Value())
 
-	if err := DeployApp(appDeploymentSpec, apiHandler.client); err != nil {
+	if err := DeployApp(appDeploymentSpec, apiHandler.client, volInfo); err != nil {
 		handleInternalError(response, err)
 		return
 	}

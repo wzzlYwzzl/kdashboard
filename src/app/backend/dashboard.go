@@ -37,7 +37,8 @@ var (
 		"to connect to in the format of protocol://address:port, e.g., "+
 		"http://localhost:8082. If not specified, the assumption is that the binary runs inside a"+
 		"Kubernetes cluster and service proxy will be used.")
-	argHttpDBHost = pflag.String("httpdb-host", "", "The address of the HttpDB server.")
+	argHttpDBHost    = pflag.String("httpdb-host", "", "The address of the HttpDB server.")
+	argCetusfsVolume = pflag.String("cetusfs-volume", "", "The mount path of the cetusfs.")
 
 	//global session statement
 	globalSessions *session.Manager
@@ -72,7 +73,7 @@ func main() {
 	// Run a HTTP server that serves static public files from './public' and handles API calls.
 	// TODO(bryk): Disable directory listing.
 	http.Handle("/", http.FileServer(http.Dir("./public/")))
-	http.Handle("/api/", CreateHttpApiHandler(apiserverClient, heapsterRESTClient, config, httpdbClient, globalSessions))
+	http.Handle("/api/", CreateHttpApiHandler(apiserverClient, heapsterRESTClient, config, httpdbClient, globalSessions, *argCetusfsVolume))
 	// TODO(maciaszczykm): Move to /appConfig.json as it was discussed in #640.
 	http.Handle("/api/appConfig.json", AppHandler(ConfigHandler))
 	log.Print(http.ListenAndServe(fmt.Sprintf(":%d", *argPort), nil))
